@@ -7,7 +7,12 @@ import { z } from "zod";
 import jwt from "jsonwebtoken";
 //internal packages
 import userModel from "./models/user.js";
+import questModel from "./models/quest.js";
+//middleware
 import verifyToken from "./middleware/verifyToken.js";
+//utilities
+import initializeQuestStats from "./utils/initializeQuestStats.js";
+import updateQuestStats from "./utils/updateQuestStats.js";
 //general setup
 const app = express();
 app.use(express.json());
@@ -83,4 +88,45 @@ app.post("/api/v1/login", async (req, res) => {
 app.get("/api/v1/protected", verifyToken, (req, res) => {
   console.log(req.user);
   res.send("protected route working");
+});
+//quest routes
+app.post("/api/v1/quests/create", verifyToken, async (req, res) => {
+  const { title, description, questions, bounty, status } = req.body;
+  const createdBy = req.user.username;
+  const user = await userModel.findOne({ username: createdBy });
+  if (!user) {
+    res.status(400).json({ message: "User not found" });
+  }
+  const quest = new questModel({
+    title,
+    description,
+    questions,
+    bounty,
+    createdBy: user,
+    status,
+  });
+  const createdQuest = await quest.save();
+  await initializeQuestStats(createdQuest._id);
+
+  res.status(200).json({ message: "Quest created successfully" });
+});
+app.get("/api/v1/quests", async (req, res) => {
+  const quests = await questModel
+    .find({ status: "open" })
+    .populate("createdBy", "username");
+  res.status(200).json(quests);
+});
+app.post("/api/v1/quests/:questId/answers", verifyToken, async (req, res) => {
+  const { questId } = req.params;
+  const username = req.user.username;
+  const answers = req.body;
+  try {
+    await updateQuestStats(questId, username, answers);
+    res.status(200).json({ message: "Answers submitted successfully" });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Failed to submit answers", error: error.message });
+  }
 });
