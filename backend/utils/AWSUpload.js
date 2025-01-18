@@ -1,6 +1,8 @@
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
-const crypto = require("crypto");
-require("dotenv").config();
+import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import crypto from "crypto";
+import dotenv from "dotenv/config";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+
 
 const s3Client = new S3Client({
   region: process.env.AWS_REGION,
@@ -16,7 +18,12 @@ const generateFileName = (bytes = 32) =>
   crypto.randomBytes(bytes).toString("hex");
 
 const uploadToS3 = async (file) => {
+  console.log('File Buffer:', file.buffer);
+  console.log('File Size:', file.buffer ? file.buffer.length : 'No file buffer');
+
+
   const fileName = generateFileName();
+
   const uploadParams = {
     Bucket: bucketName,
     Key: fileName,
@@ -24,8 +31,20 @@ const uploadToS3 = async (file) => {
     ContentType: file.mimetype,
   };
 
-  await s3Client.send(new PutObjectCommand(uploadParams));
-  return `${process.env.AWS_BUCKET_URL}/${fileName}`;
+
+  const uploadResponse = await s3Client.send(new PutObjectCommand(uploadParams));
+
+
+  const getObjectParams = {
+    Bucket: bucketName,
+    Key: fileName,
+  };
+
+
+  const signedUrl = await getSignedUrl(s3Client, new GetObjectCommand(getObjectParams), { expiresIn: 360000 });
+
+
+  return signedUrl;
 };
 
-module.exports = uploadToS3;
+export default uploadToS3;
