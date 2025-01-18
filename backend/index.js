@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import { z } from "zod";
 import jwt from "jsonwebtoken";
+import cors from 'cors';
 //internal packages
 import userModel from "./models/user.js";
 import questModel from "./models/quest.js";
@@ -19,8 +20,13 @@ app.use(express.json());
 app.listen("5555", () => {
   console.log("Server is running on port 5555");
 });
+app.use(cors({
+  origin: 'http://localhost:5173',  
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 mongoose
-  .connect(process.env.MONGODB_URI)
+  .connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/your-database')
   .then(() => console.log("Connected to database"))
   .catch((err) => console.error("Database connection failed:", err));
 
@@ -41,14 +47,16 @@ app.post("/api/v1/signup", async (req, res) => {
     await user.save();
     res.send("User Registered Successfully");
   } catch (err) {
+    console.log(err.message)
     res.status(500).send(err);
   }
 });
 app.post("/api/v1/login", async (req, res) => {
-  const { emailorusername, password, type } = req.body;
+  console.log(req.body);
+  const { emailOrUsername, password, type } = req.body;
 
   if (type === "email") {
-    const email = emailorusername;
+    const email = emailOrUsername;
     const user = await userModel.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "User not found" });
@@ -64,7 +72,7 @@ app.post("/api/v1/login", async (req, res) => {
     });
   } else {
     console.log("From username section");
-    const username = emailorusername;
+    const username = emailOrUsername;
     const user = await userModel.findOne({ username });
     console.log(username);
     if (!user) {
