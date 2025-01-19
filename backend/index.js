@@ -107,9 +107,10 @@ app.get("/api/v1/protected", verifyToken, (req, res) => {
 //upload file
 app.post("/api/v1/upload",upload.single('file'),async (req,res)=>{
   console.log(req.file);
-  res.send(`File uploaded successfully: ${req.file.filename}`);
+ 
   const fileUrl = await uploadToS3(req.file);
-  console.log(fileUrl);
+
+  return res.status(200).json(fileUrl);
   
 
 });
@@ -117,7 +118,10 @@ app.post("/api/v1/upload",upload.single('file'),async (req,res)=>{
 
 //quest routes
 app.post("/api/v1/quests/create", verifyToken, async (req, res) => {
-  const { title, description, questions, bounty, status } = req.body;
+  let { title, description, questions, bounty, status } = req.body;
+  
+  
+  
   const createdBy = req.user.username;
   const user = await userModel.findOne({ username: createdBy });
   if (!user) {
