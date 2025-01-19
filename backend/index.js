@@ -14,6 +14,10 @@ import verifyToken from "./middleware/verifyToken.js";
 //utilities
 import initializeQuestStats from "./utils/initializeQuestStats.js";
 import updateQuestStats from "./utils/updateQuestStats.js";
+import multer from 'multer';
+import uploadToS3 from "./utils/AWSUpload.js";
+
+const upload = multer({ storage: multer.memoryStorage() });
 //general setup
 const app = express();
 app.use(express.json());
@@ -99,9 +103,25 @@ app.get("/api/v1/protected", verifyToken, (req, res) => {
   console.log(req.user);
   res.send("protected route working");
 });
+
+//upload file
+app.post("/api/v1/upload",upload.single('file'),async (req,res)=>{
+  console.log(req.file);
+ 
+  const fileUrl = await uploadToS3(req.file);
+
+  return res.status(200).json(fileUrl);
+  
+
+});
+
+
 //quest routes
 app.post("/api/v1/quests/create", verifyToken, async (req, res) => {
-  const { title, description, questions, bounty, status } = req.body;
+  let { title, description, questions, bounty, status } = req.body;
+  
+  
+  
   const createdBy = req.user.username;
   const user = await userModel.findOne({ username: createdBy });
   if (!user) {
@@ -147,6 +167,7 @@ app.post(
     const answers = req.body;
     try {
       await updateQuestStats(questId, username, answers);
+      
       res.status(200).json({ message: "Answers submitted successfully" });
     } catch (error) {
       console.error(error);

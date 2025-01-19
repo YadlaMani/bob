@@ -2,6 +2,7 @@ import questStatsModel from "../models/questStat.js";
 import questModel from "../models/quest.js";
 
 const initializeQuestStats = async (questId) => {
+  let i=0;
   const quest = await questModel.findById(questId);
 
   if (!quest) {
@@ -11,7 +12,8 @@ const initializeQuestStats = async (questId) => {
   const questionStats = quest.questions.map((question) => ({
     questionId: question._id,
     optionStats: question.options.map((option) => ({
-      option,
+      option:i++,
+      
       selectedCount: 0,
     })),
   }));
