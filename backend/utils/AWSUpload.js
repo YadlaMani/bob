@@ -1,7 +1,6 @@
 import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import crypto from "crypto";
 import dotenv from "dotenv/config";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 
 const s3Client = new S3Client({
@@ -33,18 +32,7 @@ const uploadToS3 = async (file) => {
 
 
   const uploadResponse = await s3Client.send(new PutObjectCommand(uploadParams));
-
-
-  const getObjectParams = {
-    Bucket: bucketName,
-    Key: fileName,
-  };
-
-
-  const signedUrl = await getSignedUrl(s3Client, new GetObjectCommand(getObjectParams), { expiresIn: 360000 });
-
-
-  return signedUrl;
+  return `${process.env.AWS_BUCKET_URL}/${fileName}`;
 };
 
 export default uploadToS3;

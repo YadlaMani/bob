@@ -163,6 +163,7 @@ app.post(
     const answers = req.body;
     try {
       await updateQuestStats(questId, username, answers);
+      
       res.status(200).json({ message: "Answers submitted successfully" });
     } catch (error) {
       console.error(error);
