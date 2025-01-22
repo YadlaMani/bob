@@ -72,8 +72,8 @@ const AnswerQuestion = () => {
                   Question {index + 1}: {q.questionText}
                 </p>
                 <ul>
-                  {q.options.map((option, idx) => (
-                    <li key={idx}>
+                  {q.options.map((option, idx) => (            
+                    <li key={idx}>                
                       <label>
                         <input
                           type="radio"
@@ -82,7 +82,7 @@ const AnswerQuestion = () => {
                           checked={answers[q._id] === idx}
                           onChange={() => handleOptionChange(q._id, idx)}
                         />
-                        {option}
+                        {option.startsWith("https://")?<img src={option} className="h-[100px] w-[200px]"/>:option}
                       </label>
                     </li>
                   ))}
@@ -91,7 +91,7 @@ const AnswerQuestion = () => {
             ))}
           </ul>
 
-          <button onClick={handleSubmit}>Submit Answers</button>
+          <button onClick={handleSubmit} className="border-2 px-4 py-2 rounded-full bg-blue-200">Submit Answers</button>
         </div>
       ) : (
         <p>Loading quest details...</p>
