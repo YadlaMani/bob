@@ -14,7 +14,7 @@ import verifyToken from "./middleware/verifyToken.js";
 //utilities
 import initializeQuestStats from "./utils/initializeQuestStats.js";
 import updateQuestStats from "./utils/updateQuestStats.js";
-import multer from 'multer';
+import multer from "multer";
 import uploadToS3 from "./utils/AWSUpload.js";
 
 const upload = multer({ storage: multer.memoryStorage() });
@@ -105,23 +105,18 @@ app.get("/api/v1/protected", verifyToken, (req, res) => {
 });
 
 //upload file
-app.post("/api/v1/upload",upload.single('file'),async (req,res)=>{
+app.post("/api/v1/upload", upload.single("file"), async (req, res) => {
   console.log(req.file);
- 
+
   const fileUrl = await uploadToS3(req.file);
 
   return res.status(200).json(fileUrl);
-  
-
 });
-
 
 //quest routes
 app.post("/api/v1/quests/create", verifyToken, async (req, res) => {
   let { title, description, questions, bounty, status } = req.body;
-  
-  
-  
+
   const createdBy = req.user.username;
   const user = await userModel.findOne({ username: createdBy });
   if (!user) {
@@ -167,7 +162,7 @@ app.post(
     const answers = req.body;
     try {
       await updateQuestStats(questId, username, answers);
-      
+
       res.status(200).json({ message: "Answers submitted successfully" });
     } catch (error) {
       console.error(error);
@@ -187,4 +182,16 @@ app.get("/api/v1/questStats/:questId", verifyToken, async (req, res) => {
     console.log(err.message);
     res.status(500).json({ message: "Failed to fetch quest stats" });
   }
+});
+//user routes
+app.get("/api/v1/user", verifyToken, async (req, res) => {
+  const username = req.user.username;
+  const users = await userModel.find({ username });
+  res.status(200).json(users);
+});
+app.get("/api/v1/user/quests", verifyToken, async (req, res) => {
+  const username = req.user.username;
+  const user = await userModel.findOne({ username });
+  const quests = await questModel.find({ createdBy: user._id });
+  res.status(200).json(quests);
 });

@@ -29,7 +29,7 @@ DataQuest connects businesses, researchers, and content creators with a global c
 * Instant worldwide payments
 * Microscopic transaction fees
 * Automated reward distribution
-* Secure wallet integration
+* [X] Secure wallet integration
 #### Reward Management
 * [X] Set per-response bounties
 * Implement bonus structures

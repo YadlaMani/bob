@@ -1,9 +1,18 @@
 import { useState } from "react";
 import axios from "axios";
-import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 
+import { useNavigate } from "react-router-dom";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import {
+  LAMPORTS_PER_SOL,
+  PublicKey,
+  SystemProgram,
+  Transaction,
+} from "@solana/web3.js";
+import { toast } from "sonner";
 export default function CreateQuestion() {
+  const wallet = useWallet();
+  const { connection } = useConnection();
   const [type, setType] = useState("text"); // Selected question type
   const [addQuestion, setAddQuestion] = useState(false);
   const [options, setOptions] = useState([]); // Options for the current question
@@ -15,7 +24,9 @@ export default function CreateQuestion() {
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
+  if (!wallet.publicKey) {
+    toast.error("Connect wallet to create quest");
+  }
   // Add new empty option
   const handleAddOption = () => {
     setOptions((prevOptions) => [...prevOptions, ""]); // Add empty string for new option
@@ -37,9 +48,13 @@ export default function CreateQuestion() {
     formData.append("file", file);
 
     try {
-      const response = await axios.post("http://localhost:5555/api/v1/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const response = await axios.post(
+        "http://localhost:5555/api/v1/upload",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
       const uploadedUrl = response.data; // Assuming the API returns the URL directly in response.data
       setOptions((prevOptions) => {
         const newOptions = [...prevOptions];
@@ -56,7 +71,7 @@ export default function CreateQuestion() {
   // Add question to the list
   const handleAddQuestion = (e) => {
     e.preventDefault();
-    if(options.length==0){
+    if (options.length == 0) {
       setError("Question must have at least one option");
 
       return;
@@ -86,13 +101,36 @@ export default function CreateQuestion() {
       status,
       questions,
     };
+    try {
+      const lamports = parseFloat(bounty) * LAMPORTS_PER_SOL;
+      const transaction = new Transaction().add(
+        SystemProgram.transfer({
+          fromPubkey: wallet.publicKey,
+          toPubkey: "2Bn6FVMrcg2Uob9AwpGTmYzHfByZoCJDNyu14GLCCLF1",
+          lamports,
+        })
+      );
+      console.log("Sending transaction...", transaction);
+      const signature = await wallet.sendTransaction(transaction, connection);
+      console.log("Transaction sent!", signature);
+      await connection.confirmTransaction(signature, "processed");
+      console.log("Transaction confirmed!");
+      toast.success("Bounty set successfully!");
+    } catch (err) {
+      toast.error(err);
+      return;
+    }
 
     try {
-      const response = await axios.post("http://localhost:5555/api/v1/quests/create", questData, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await axios.post(
+        "http://localhost:5555/api/v1/quests/create",
+        questData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
       toast.success("Quest created successfully!");
       setTitle("");
       setDescription("");
@@ -142,7 +180,11 @@ export default function CreateQuestion() {
             <ul className="list-disc ml-5">
               {question.options.map((option, idx) => (
                 <li key={idx}>
-                  {question.type === "text" ? option : <img src={option} alt={`Option ${idx + 1}`} />}
+                  {question.type === "text" ? (
+                    option
+                  ) : (
+                    <img src={option} alt={`Option ${idx + 1}`} />
+                  )}
                 </li>
               ))}
             </ul>
@@ -225,7 +267,11 @@ export default function CreateQuestion() {
       </label>
       <label htmlFor="status">
         Status:
-        <select name="status" value={status} onChange={(e) => setStatus(e.target.value)}>
+        <select
+          name="status"
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+        >
           <option value="open">Open</option>
           <option value="closed">Closed</option>
           <option value="draft">Draft</option>

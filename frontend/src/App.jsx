@@ -20,6 +20,7 @@ import Register from "./pages/Register";
 import CreateQuestion from "./pages/createQuestion";
 import AnswerQuestion from "./pages/AnswerQuestion";
 import Home from "./pages/Home";
+import Profile from "./pages/Profile";
 import { Toaster } from "sonner";
 import "./index.css";
 import "@solana/wallet-adapter-react-ui/styles.css";
@@ -47,6 +48,7 @@ const App = () => {
                 <Route path="/register" element={<Register />} />
                 <Route path="/create" element={<CreateQuestion />} />
                 <Route path="/answer/:id" element={<AnswerQuestion />} />
+                <Route path="/profile" element={<Profile />} />
               </Routes>
             </div>
           </Router>
