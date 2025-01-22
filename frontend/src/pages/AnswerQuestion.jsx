@@ -30,10 +30,11 @@ const AnswerQuestion = () => {
     }));
   };
 
+  
   const handleSubmit = async () => {
     const payload = Object.entries(answers).map(([questionId, option]) => ({
       questionId,
-      option,
+      option:option+1,//option changed to option+1
     }));
     try {
       const response = await axios.post(
