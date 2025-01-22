@@ -9,6 +9,7 @@ import cors from "cors";
 //internal packages
 import userModel from "./models/user.js";
 import questModel from "./models/quest.js";
+import questStatsModel from "./models/questStat.js";
 //middleware
 import verifyToken from "./middleware/verifyToken.js";
 //utilities

@@ -23,6 +23,7 @@ import Home from "./pages/Home";
 import { Toaster } from "sonner";
 import "./index.css";
 import "@solana/wallet-adapter-react-ui/styles.css";
+import Stats from "./pages/Stats";
 
 const App = () => {
   const network = clusterApiUrl("devnet");
@@ -47,6 +48,7 @@ const App = () => {
                 <Route path="/register" element={<Register />} />
                 <Route path="/create" element={<CreateQuestion />} />
                 <Route path="/answer/:id" element={<AnswerQuestion />} />
+                <Route path="/questStats/:questId" element={<Stats />} />
               </Routes>
             </div>
           </Router>

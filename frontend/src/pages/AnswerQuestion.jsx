@@ -11,7 +11,7 @@ const AnswerQuestion = () => {
   async function getQuest() {
     try {
       const response = await axios.get(
-        `http://localhost:5555/api/v1/quests/${id}`
+        `http://localhost:5555/api/v1/quests/${id}`,
       );
       setQuest(response.data);
     } catch (err) {
