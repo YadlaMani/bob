@@ -26,8 +26,8 @@ DataQuest connects businesses, researchers, and content creators with a global c
 * Access response timestamps and metadata
 ### Payment System
 #### Solana Integration
-* Instant worldwide payments
-* Microscopic transaction fees
+* [X] Instant worldwide payments
+* [X] Microscopic transaction fees
 * Automated reward distribution
 * [X] Secure wallet integration
 #### Reward Management
