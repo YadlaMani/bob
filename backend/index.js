@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import { z } from "zod";
 import jwt from "jsonwebtoken";
 import cors from "cors";
+
 //internal packages
 import userModel from "./models/user.js";
 import questModel from "./models/quest.js";
@@ -17,6 +18,7 @@ import initializeQuestStats from "./utils/initializeQuestStats.js";
 import updateQuestStats from "./utils/updateQuestStats.js";
 import multer from "multer";
 import uploadToS3 from "./utils/AWSUpload.js";
+import sendBalanceToUser from "./utils/sendBalanceToUser.js";
 
 const upload = multer({ storage: multer.memoryStorage() });
 //general setup
@@ -116,7 +118,7 @@ app.post("/api/v1/upload", upload.single("file"), async (req, res) => {
 
 //quest routes
 app.post("/api/v1/quests/create", verifyToken, async (req, res) => {
-  let { title, description, questions, bounty, status,attempts } = req.body;
+  let { title, description, questions, bounty, status, attempts } = req.body;
   console.log(req.body);
 
   const createdBy = req.user.username;
@@ -131,7 +133,7 @@ app.post("/api/v1/quests/create", verifyToken, async (req, res) => {
     bounty,
     createdBy: user,
     status,
-    attempts
+    attempts,
   });
   const createdQuest = await quest.save();
   await initializeQuestStats(createdQuest._id);
@@ -181,7 +183,7 @@ app.post(
 
       // Update user earnings and balance
       const reward = (quest.bounty * 0.95) / quest.attempts;
-      
+
       user.balance += reward;
       user.earnings += reward;
 
@@ -225,12 +227,34 @@ app.get("/api/v1/user/quests", verifyToken, async (req, res) => {
   const quests = await questModel.find({ createdBy: user._id });
   res.status(200).json(quests);
 });
-app.get("/api/v1/user/withdraw",verifyToken,async(req,res)=>{
-  const username = req.user.username;
-  const user = await userModel.findOne({ username });
-  const balance=user.balance;
-  res.status(200).json({
-    "message":`Balance: ${balance} deposited into ur wallet`
-  })
- 
-})
+app.get("/api/v1/user/withdraw", async (req, res) => {
+  try {
+    const username = "test";
+    const toAddress = req.body.pubKey;
+
+    const user = await userModel.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const balance = user.balance;
+    if (balance <= 0) {
+      return res.status(400).json({ message: "Insufficient balance" });
+    }
+
+    const transactionSignature = await sendBalanceToUser(balance, toAddress);
+
+    user.balance = 0;
+    await user.save();
+
+    res.status(200).json({
+      message: `Balance of ${balance} SOL deposited successfully`,
+      transactionSignature,
+    });
+  } catch (error) {
+    console.error("Withdrawal API error:", error);
+    res
+      .status(500)
+      .json({ message: "Withdrawal failed", error: error.message });
+  }
+});
