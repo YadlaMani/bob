@@ -181,6 +181,7 @@ app.post(
 
       // Update user earnings and balance
       const reward = (quest.bounty * 0.95) / quest.attempts;
+      
       user.balance += reward;
       user.earnings += reward;
 
@@ -224,3 +225,12 @@ app.get("/api/v1/user/quests", verifyToken, async (req, res) => {
   const quests = await questModel.find({ createdBy: user._id });
   res.status(200).json(quests);
 });
+app.get("/api/v1/user/withdraw",verifyToken,async(req,res)=>{
+  const username = req.user.username;
+  const user = await userModel.findOne({ username });
+  const balance=user.balance;
+  res.status(200).json({
+    "message":`Balance: ${balance} deposited into ur wallet`
+  })
+ 
+})

@@ -1,8 +1,19 @@
 import { React, useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "sonner";
 const Profile = () => {
   if (!localStorage.getItem("token")) {
     window.location.href = "/login";
+  }
+  async function handleWithdraw(e){
+    e.preventDefault();
+    const response=await axios.get("http://localhost:5555/api/v1/user/withdraw",{
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    toast.success(response.data.message);
+
   }
   const [user, setUser] = useState(null);
   const [quests, setQuests] = useState([]);
@@ -38,6 +49,11 @@ const Profile = () => {
             <div>
               <h2>Username:{user.username}</h2>
               <h2>Email:{user.email}</h2>
+              <h2>Earnings:{user.earnings}</h2>
+              <h2>Balance:{user.balance}</h2>
+              <button  className="border-2 " onClick={(e)=>{
+                handleWithdraw(e);
+              }}>Withdraw</button>
             </div>
           </div>
           <div>
