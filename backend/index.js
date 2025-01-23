@@ -227,26 +227,21 @@ app.get("/api/v1/user/quests", verifyToken, async (req, res) => {
   const quests = await questModel.find({ createdBy: user._id });
   res.status(200).json(quests);
 });
-app.get("/api/v1/user/withdraw", async (req, res) => {
+app.post("/api/v1/user/withdraw", verifyToken, async (req, res) => {
   try {
     const username = "test";
     const toAddress = req.body.pubKey;
-
     const user = await userModel.findOne({ username });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-
     const balance = user.balance;
     if (balance <= 0) {
       return res.status(400).json({ message: "Insufficient balance" });
     }
-
     const transactionSignature = await sendBalanceToUser(balance, toAddress);
-
     user.balance = 0;
     await user.save();
-
     res.status(200).json({
       message: `Balance of ${balance} SOL deposited successfully`,
       transactionSignature,

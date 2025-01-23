@@ -22,7 +22,7 @@ export default function CreateQuestion() {
   const [status, setStatus] = useState("open");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [attempts,setAttempts]=useState(0);
+  const [attempts, setAttempts] = useState(0);
   const [error, setError] = useState("");
   const navigate = useNavigate();
   if (!wallet.publicKey) {
@@ -101,14 +101,14 @@ export default function CreateQuestion() {
       bounty,
       status,
       questions,
-      attempts
+      attempts,
     };
     try {
       const lamports = parseFloat(bounty) * LAMPORTS_PER_SOL;
       const transaction = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey: wallet.publicKey,
-          toPubkey: "GMZizDCfwEaF8NvZqootBw6SFwBx23phme7iWk231bgm",
+          toPubkey: "4UdxMzvuWWyZ2DpWmLSMfKnyugiDbUcbRBMUoQCMpdX5",
           lamports,
         })
       );

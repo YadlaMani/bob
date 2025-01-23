@@ -1,5 +1,6 @@
 import pkg from "@solana/web3.js";
 const { Keypair, Transaction, Connection, SystemProgram } = pkg;
+import { getKeypairFromEnvironment } from "@solana-developers/helpers";
 
 const sendBalanceToUser = async (balance, pubKey) => {
   try {
@@ -7,10 +8,7 @@ const sendBalanceToUser = async (balance, pubKey) => {
       "https://solana-devnet.g.alchemy.com/v2/5pNLaxwfuYHHlgvFr1-EqCk1V4kzvOTw"
     );
 
-    const privateKeyArray = process.env.PRIVATE_KEY;
-    const privateKeyBuffer = Uint8Array.from(privateKeyArray);
-    const from = Keypair.fromSecretKey(privateKeyBuffer);
-
+    const from = getKeypairFromEnvironment("SECRET_KEY");
     const lamportsToSend = Math.floor(balance * 1000000000);
 
     const fromBalance = await connection.getBalance(from.publicKey);
@@ -18,21 +16,15 @@ const sendBalanceToUser = async (balance, pubKey) => {
       throw new Error("Insufficient funds for transfer and fees.");
     }
 
-    if (!PublicKey.isOnCurve(pubKey)) {
-      throw new Error("Invalid recipient public key.");
-    }
-
     const transaction = new Transaction().add(
       SystemProgram.transfer({
         fromPubkey: from.publicKey,
-        toPubkey: new PublicKey(pubKey),
+        toPubkey: pubKey,
         lamports: lamportsToSend,
       })
     );
 
-    const signature = await connection.sendAndConfirmTransaction(transaction, [
-      from,
-    ]);
+    const signature = await connection.sendTransaction(transaction, [from]);
 
     console.log("Transaction successful:", signature);
     return signature;
