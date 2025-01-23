@@ -116,7 +116,8 @@ app.post("/api/v1/upload", upload.single("file"), async (req, res) => {
 
 //quest routes
 app.post("/api/v1/quests/create", verifyToken, async (req, res) => {
-  let { title, description, questions, bounty, status } = req.body;
+  let { title, description, questions, bounty, status,attempts } = req.body;
+  console.log(req.body);
 
   const createdBy = req.user.username;
   const user = await userModel.findOne({ username: createdBy });
@@ -130,6 +131,7 @@ app.post("/api/v1/quests/create", verifyToken, async (req, res) => {
     bounty,
     createdBy: user,
     status,
+    attempts
   });
   const createdQuest = await quest.save();
   await initializeQuestStats(createdQuest._id);
@@ -161,8 +163,33 @@ app.post(
     const { questId } = req.params;
     const username = req.user.username;
     const answers = req.body;
+
     try {
+      // Update quest stats
       await updateQuestStats(questId, username, answers);
+
+      // Fetch the quest and user documents
+      const quest = await questModel.findById(questId);
+      if (!quest) {
+        return res.status(404).json({ message: "Quest not found" });
+      }
+
+      const user = await userModel.findOne({ username: username });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Update user earnings and balance
+      const reward = (quest.bounty * 0.95) / quest.attempts;
+      user.balance += reward;
+      user.earnings += reward;
+
+      // Update quest attempts
+      quest.attempts -= 1;
+
+      // Save the updated documents
+      await user.save();
+      await quest.save();
 
       res.status(200).json({ message: "Answers submitted successfully" });
     } catch (error) {
@@ -173,6 +200,7 @@ app.post(
     }
   }
 );
+
 app.get("/api/v1/questStats/:questId", verifyToken, async (req, res) => {
   try {
     const questStats = await questStatsModel.findOne({

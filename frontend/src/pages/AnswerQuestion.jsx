@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
+import { useWallet } from "@solana/wallet-adapter-react";
 const AnswerQuestion = () => {
   const [quest, setQuest] = useState(null);
   const [answers, setAnswers] = useState({});
   const { id } = useParams();
   const navigate = useNavigate();
+  const wallet=useWallet();
+  
 
   async function getQuest() {
     try {
@@ -36,6 +39,7 @@ const AnswerQuestion = () => {
       questionId,
       option:option+1,//option changed to option+1
     }));
+
     try {
       const response = await axios.post(
         `http://localhost:5555/api/v1/questStats/${id}/answers`,
@@ -48,6 +52,7 @@ const AnswerQuestion = () => {
       );
 
       toast.success(response.data.message);
+      toast.success("Completed quest u earned",response.data.earning);
       navigate("/");
     } catch (err) {
       toast.error("Failed to submit answers");
@@ -64,6 +69,7 @@ const AnswerQuestion = () => {
           <h4>Status: {quest.status}</h4>
           <h5>Created At: {new Date(quest.createdAt).toLocaleString()}</h5>
           <h5>Created By: {quest.createdBy.username}</h5>
+          <h5>You will get:{quest.bounty*0.95/quest.attempts}</h5>
 
           <h2>Questions:</h2>
           <ul>

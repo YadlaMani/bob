@@ -22,6 +22,7 @@ export default function CreateQuestion() {
   const [status, setStatus] = useState("open");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [attempts,setAttempts]=useState(0);
   const [error, setError] = useState("");
   const navigate = useNavigate();
   if (!wallet.publicKey) {
@@ -100,13 +101,14 @@ export default function CreateQuestion() {
       bounty,
       status,
       questions,
+      attempts
     };
     try {
       const lamports = parseFloat(bounty) * LAMPORTS_PER_SOL;
       const transaction = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey: wallet.publicKey,
-          toPubkey: "2Bn6FVMrcg2Uob9AwpGTmYzHfByZoCJDNyu14GLCCLF1",
+          toPubkey: "GMZizDCfwEaF8NvZqootBw6SFwBx23phme7iWk231bgm",
           lamports,
         })
       );
@@ -138,6 +140,7 @@ export default function CreateQuestion() {
       setStatus("open");
       setQuestions([]);
       setError("");
+      setAttempts(null);
       navigate("/");
     } catch (err) {
       console.error(err);
@@ -262,6 +265,16 @@ export default function CreateQuestion() {
           name="bounty"
           value={bounty || ""}
           onChange={(e) => setBounty(e.target.value)}
+          required
+        />
+      </label>
+      <label htmlFor="attempts">
+        Attempts:
+        <input
+          type="number"
+          name="attempts"
+          value={attempts || ""}
+          onChange={(e) => setAttempts(e.target.value)}
           required
         />
       </label>
