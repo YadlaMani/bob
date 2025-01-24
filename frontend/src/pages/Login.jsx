@@ -1,31 +1,34 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [emailOrUsername, setEmailOrUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [type, setType] = useState('email');
+  const [emailOrUsername, setEmailOrUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [type, setType] = useState("email");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:5555/api/v1/login', {
-        emailOrUsername: emailOrUsername,
-        password,
-        type,
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/login`,
+        {
+          emailOrUsername: emailOrUsername,
+          password,
+          type,
+        }
+      );
 
       const { token } = response.data;
-      localStorage.setItem('token', token);
+      localStorage.setItem("token", token);
 
-      navigate('/protected');
+      navigate("/protected");
     } catch (err) {
       console.log(err.message);
-      setError(err.response?.data?.message || 'Something went wrong');
+      setError(err.response?.data?.message || "Something went wrong");
     }
   };
 
@@ -37,7 +40,7 @@ const Login = () => {
           Sign In to <span className="text-blue-500">BOB</span>
         </h1>
         <p className="text-gray-400 text-lg">
-          Don't have an account?{' '}
+          Don't have an account?{" "}
           <a href="/register" className="text-blue-500 underline">
             Register here!
           </a>
@@ -57,7 +60,9 @@ const Login = () => {
         <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2">Email or Username:</label>
+            <label className="block text-sm font-medium mb-2">
+              Email or Username:
+            </label>
             <input
               type="text"
               value={emailOrUsername}
@@ -75,7 +80,9 @@ const Login = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2">Login with:</label>
+            <label className="block text-sm font-medium mb-2">
+              Login with:
+            </label>
             <select
               value={type}
               onChange={(e) => setType(e.target.value)}
@@ -94,7 +101,7 @@ const Login = () => {
           </button>
         </form>
         <p className="text-center mt-4 text-sm">
-          Don't have an account?{' '}
+          Don't have an account?{" "}
           <a href="/register" className="text-blue-500 hover:underline">
             Register here
           </a>

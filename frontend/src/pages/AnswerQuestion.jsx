@@ -8,13 +8,12 @@ const AnswerQuestion = () => {
   const [answers, setAnswers] = useState({});
   const { id } = useParams();
   const navigate = useNavigate();
-  const wallet=useWallet();
-  
+  const wallet = useWallet();
 
   async function getQuest() {
     try {
       const response = await axios.get(
-        `http://localhost:5555/api/v1/quests/${id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/quests/${id}`
       );
       setQuest(response.data);
     } catch (err) {
@@ -33,16 +32,15 @@ const AnswerQuestion = () => {
     }));
   };
 
-  
   const handleSubmit = async () => {
     const payload = Object.entries(answers).map(([questionId, option]) => ({
       questionId,
-      option:option+1,//option changed to option+1
+      option: option + 1, //option changed to option+1
     }));
 
     try {
       const response = await axios.post(
-        `http://localhost:5555/api/v1/questStats/${id}/answers`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/questStats/${id}/answers`,
         payload,
         {
           headers: {
@@ -52,7 +50,7 @@ const AnswerQuestion = () => {
       );
 
       toast.success(response.data.message);
-      toast.success("Completed quest u earned",response.data.earning);
+      toast.success("Completed quest u earned", response.data.earning);
       navigate("/");
     } catch (err) {
       toast.error("Failed to submit answers");
@@ -69,7 +67,7 @@ const AnswerQuestion = () => {
           <h4>Status: {quest.status}</h4>
           <h5>Created At: {new Date(quest.createdAt).toLocaleString()}</h5>
           <h5>Created By: {quest.createdBy.username}</h5>
-          <h5>You will get:{quest.bounty*0.95/quest.attempts}</h5>
+          <h5>You will get:{(quest.bounty * 0.95) / quest.attempts}</h5>
 
           <h2>Questions:</h2>
           <ul>
@@ -79,8 +77,8 @@ const AnswerQuestion = () => {
                   Question {index + 1}: {q.questionText}
                 </p>
                 <ul>
-                  {q.options.map((option, idx) => (            
-                    <li key={idx}>                
+                  {q.options.map((option, idx) => (
+                    <li key={idx}>
                       <label>
                         <input
                           type="radio"
@@ -89,7 +87,11 @@ const AnswerQuestion = () => {
                           checked={answers[q._id] === idx}
                           onChange={() => handleOptionChange(q._id, idx)}
                         />
-                        {option.startsWith("https://")?<img src={option} className="h-[100px] w-[200px]"/>:option}
+                        {option.startsWith("https://") ? (
+                          <img src={option} className="h-[100px] w-[200px]" />
+                        ) : (
+                          option
+                        )}
                       </label>
                     </li>
                   ))}
@@ -98,7 +100,12 @@ const AnswerQuestion = () => {
             ))}
           </ul>
 
-          <button onClick={handleSubmit} className="border-2 px-4 py-2 rounded-full bg-blue-200">Submit Answers</button>
+          <button
+            onClick={handleSubmit}
+            className="border-2 px-4 py-2 rounded-full bg-blue-200"
+          >
+            Submit Answers
+          </button>
         </div>
       ) : (
         <p>Loading quest details...</p>

@@ -17,7 +17,7 @@ const Profile = () => {
       pubKey: wallet.publicKey,
     };
     const response = await axios.post(
-      "http://localhost:5555/api/v1/user/withdraw",
+      `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/withdraw`,
       data,
       {
         headers: {
@@ -31,7 +31,7 @@ const Profile = () => {
   const [quests, setQuests] = useState([]);
   async function fetchUserDetails() {
     const response = await axios.get(
-      "http://localhost:5555/api/v1/user",
+      `${import.meta.env.VITE_BACKEND_URL}/api/v1/user`,
 
       {
         headers: {
@@ -43,7 +43,7 @@ const Profile = () => {
   }
   async function fetchUserQuest() {
     const response = await axios.get(
-      "http://localhost:5555/api/v1/user/quests",
+      `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/quests`,
       { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
     );
     setQuests(response.data);

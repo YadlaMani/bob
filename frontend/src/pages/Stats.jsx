@@ -7,7 +7,7 @@ export default function Stats() {
   const [stats, setStats] = useState();
   const [quest, setQuest] = useState();
   const { questId } = useParams();
-  const [question,setQuestion]=useState("all");
+  const [question, setQuestion] = useState("all");
   const [isLoading, setIsLoading] = useState(true);
   const [questionMap, setQuestionMap] = useState({
     question: "",
@@ -17,7 +17,7 @@ export default function Stats() {
   async function fetchQuest(id) {
     try {
       const response = await axios.get(
-        `http://localhost:5555/api/v1/quests/${id}`
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/quests/${id}`
       );
       console.log("Quest", response.data);
       setQuest(response.data);
@@ -30,7 +30,7 @@ export default function Stats() {
   async function getStats() {
     try {
       const response = await axios.get(
-        `http://localhost:5555/api/v1/questStats/${questId}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/questStats/${questId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -48,19 +48,20 @@ export default function Stats() {
     }
   }
 
-  
-
   useEffect(() => {
     getStats();
   }, [questId]);
   if (isLoading) return <p>loading</p>;
-  const questionFilterStats=question==='all'?stats.questionStats:stats.questionStats.filter(q => q.questionId === question);
+  const questionFilterStats =
+    question === "all"
+      ? stats.questionStats
+      : stats.questionStats.filter((q) => q.questionId === question);
   return (
     <div>
       <h1>Stats Page</h1>
       <h2>Filters</h2>
       <label>Select Question</label>
-      <select name="question" onChange={(e)=>setQuestion(e.target.value)}>
+      <select name="question" onChange={(e) => setQuestion(e.target.value)}>
         <option value={"all"}>All</option>
         {stats &&
           stats.questionStats.map((question) => (

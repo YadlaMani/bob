@@ -50,7 +50,7 @@ export default function CreateQuestion() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5555/api/v1/upload",
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/upload`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -125,7 +125,7 @@ export default function CreateQuestion() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5555/api/v1/quests/create",
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/quests/create`,
         questData,
         {
           headers: {

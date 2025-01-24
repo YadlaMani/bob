@@ -13,7 +13,7 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:5555/api/v1/signup", {
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/signup`, {
         username,
         email,
         password,
@@ -21,7 +21,7 @@ const Register = () => {
       navigate("/login");
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong");
-    } 
+    }
   };
 
   return (
@@ -78,9 +78,7 @@ const Register = () => {
               className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          {error && (
-            <p className="text-red-500 text-sm mb-4">{error}</p>
-          )}
+          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
           <button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors duration-200"
@@ -90,10 +88,7 @@ const Register = () => {
         </form>
         <p className="text-center mt-4 text-sm">
           Already have an account?{" "}
-          <a
-            href="/login"
-            className="text-blue-500 hover:underline"
-          >
+          <a href="/login" className="text-blue-500 hover:underline">
             Sign in here
           </a>
         </p>
