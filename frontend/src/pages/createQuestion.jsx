@@ -108,7 +108,7 @@ export default function CreateQuestion() {
       const transaction = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey: wallet.publicKey,
-          toPubkey: "4UdxMzvuWWyZ2DpWmLSMfKnyugiDbUcbRBMUoQCMpdX5",
+          toPubkey: import.meta.env.VITE_MASTER_WALLET,
           lamports,
         })
       );

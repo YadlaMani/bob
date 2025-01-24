@@ -4,9 +4,7 @@ import { getKeypairFromEnvironment } from "@solana-developers/helpers";
 
 const sendBalanceToUser = async (balance, pubKey) => {
   try {
-    const connection = new Connection(
-      "https://solana-devnet.g.alchemy.com/v2/5pNLaxwfuYHHlgvFr1-EqCk1V4kzvOTw"
-    );
+    const connection = new Connection(process.env.CONNECTION_URL);
 
     const from = getKeypairFromEnvironment("SECRET_KEY");
     const lamportsToSend = Math.floor(balance * 1000000000);
