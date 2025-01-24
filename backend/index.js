@@ -186,6 +186,8 @@ app.post(
 
       user.balance += reward;
       user.earnings += reward;
+      quest.bounty -= reward;
+      user.earningsHistory.push({ amount: reward, time: new Date() });
 
       // Update quest attempts
       quest.attempts -= 1;
@@ -194,7 +196,9 @@ app.post(
       await user.save();
       await quest.save();
 
-      res.status(200).json({ message: "Answers submitted successfully" });
+      res
+        .status(200)
+        .json({ message: "Answers submitted successfully", earnings: reward });
     } catch (error) {
       console.error(error);
       res

@@ -50,7 +50,7 @@ const AnswerQuestion = () => {
       );
 
       toast.success(response.data.message);
-      toast.success("Completed quest u earned", response.data.earning);
+      toast.success(`Completed quest u earned ${response.data.earnings}`);
       navigate("/");
     } catch (err) {
       toast.error("Failed to submit answers");

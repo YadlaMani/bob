@@ -84,6 +84,15 @@ const Profile = () => {
                 </a>
               ))}
           </div>
+          <div>
+            {user.earningsHistory &&
+              user.earningsHistory.map((earning) => (
+                <div>
+                  <h2>{earning.time}</h2>
+                  <h2>{earning.amount}</h2>
+                </div>
+              ))}
+          </div>
         </div>
       ) : (
         <div>loading</div>
