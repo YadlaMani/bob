@@ -30,8 +30,6 @@ app.listen("5555", () => {
 app.use(
   cors({
     origin: "https://bobv1.vercel.app",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 mongoose
