@@ -30,8 +30,14 @@ app.listen("5555", () => {
 app.use(
   cors({
     origin: "https://bobv1.vercel.app",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   })
 );
+
+// Handle Preflight Requests
+app.options("*", cors());
 mongoose
   .connect(process.env.MONGODB_URI || "mongodb://localhost:27017/your-database")
   .then(() => console.log("Connected to database"))
