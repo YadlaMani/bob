@@ -1,33 +1,36 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { Meteors } from "../components/ui/meteors";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 
 const Login = () => {
-  const [emailOrUsername, setEmailOrUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [type, setType] = useState('email');
+  const [emailOrUsername, setEmailOrUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [type, setType] = useState("email");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:5555/api/v1/login', {
-        emailOrUsername: emailOrUsername,
-        password,
-        type,
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/login`,
+        {
+          emailOrUsername: emailOrUsername,
+          password,
+          type,
+        }
+      );
 
       const { token } = response.data;
-      localStorage.setItem('token', token);
+      localStorage.setItem("token", token);
 
-      navigate('/protected');
+      navigate("/protected");
     } catch (err) {
-      setError(err.response?.data?.message || 'Something went wrong');
+      setError(err.response?.data?.message || "Something went wrong");
     }
   };
 
@@ -45,10 +48,14 @@ const Login = () => {
       </div>
 
       <div className="w-full max-w-md bg-gray-900 bg-opacity-80 rounded-lg shadow-lg p-8 lg:w-1/3 z-10 relative">
-        <h2 className="text-2xl font-semibold text-center mb-6 text-white">Log In</h2>
+        <h2 className="text-2xl font-semibold text-center mb-6 text-white">
+          Log In
+        </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <Label htmlFor="emailOrUsername" className="text-white">Email or Username</Label>
+            <Label htmlFor="emailOrUsername" className="text-white">
+              Email or Username
+            </Label>
             <Input
               id="emailOrUsername"
               placeholder="Enter your email or username"
@@ -60,7 +67,9 @@ const Login = () => {
           </div>
 
           <div className="mb-4">
-            <Label htmlFor="password" className="text-white">Password</Label>
+            <Label htmlFor="password" className="text-white">
+              Password
+            </Label>
             <Input
               id="password"
               placeholder="••••••••"
@@ -72,7 +81,9 @@ const Login = () => {
           </div>
 
           <div className="mb-4">
-            <Label htmlFor="loginType" className="text-white">Login with</Label>
+            <Label htmlFor="loginType" className="text-white">
+              Login with
+            </Label>
             <select
               id="loginType"
               value={type}
@@ -84,9 +95,7 @@ const Login = () => {
             </select>
           </div>
 
-          {error && (
-            <p className="text-red-500 text-sm mb-4">{error}</p>
-          )}
+          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
           <button
             type="submit"
@@ -98,10 +107,7 @@ const Login = () => {
 
         <p className="text-center mt-4 text-sm text-white">
           Don't have an account?{" "}
-          <a
-            href="/register"
-            className="text-blue-500 hover:underline"
-          >
+          <a href="/register" className="text-blue-500 hover:underline">
             Register here
           </a>
         </p>

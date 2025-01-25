@@ -16,7 +16,7 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:5555/api/v1/signup", {
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/signup`, {
         username,
         email,
         password,
@@ -36,15 +36,20 @@ const Register = () => {
           Sign In to <span className="text-blue-500">BOB</span>
         </h1>
         <p className="text-gray-400 text-lg">
-          If you’re looking for a data labeling platform for data scientists or a polling platform for option seekers, you can explore our services
+          If you’re looking for a data labeling platform for data scientists or
+          a polling platform for option seekers, you can explore our services
         </p>
       </div>
 
       <div className="w-full max-w-md bg-gray-900 bg-opacity-80 rounded-lg shadow-lg p-8 lg:w-1/3 z-10 relative">
-        <h2 className="text-2xl font-bold text-center mb-6 text-white">Register</h2>
+        <h2 className="text-2xl font-bold text-center mb-6 text-white">
+          Register
+        </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <Label htmlFor="username" className="text-white">Username</Label>
+            <Label htmlFor="username" className="text-white">
+              Username
+            </Label>
             <Input
               id="username"
               placeholder="Enter your username"
@@ -56,7 +61,9 @@ const Register = () => {
           </div>
 
           <div className="mb-4">
-            <Label htmlFor="email" className="text-white">Email</Label>
+            <Label htmlFor="email" className="text-white">
+              Email
+            </Label>
             <Input
               id="email"
               placeholder="Enter your email"
@@ -68,7 +75,9 @@ const Register = () => {
           </div>
 
           <div className="mb-4">
-            <Label htmlFor="password" className="text-white">Password</Label>
+            <Label htmlFor="password" className="text-white">
+              Password
+            </Label>
             <Input
               id="password"
               placeholder="••••••••"
@@ -79,9 +88,7 @@ const Register = () => {
             />
           </div>
 
-          {error && (
-            <p className="text-red-500 text-sm mb-4">{error}</p>
-          )}
+          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
           <button
             type="submit"
@@ -93,10 +100,7 @@ const Register = () => {
 
         <p className="text-center mt-4 text-sm text-white">
           Already have an account?{" "}
-          <a
-            href="/login"
-            className="text-blue-500 hover:underline"
-          >
+          <a href="/login" className="text-blue-500 hover:underline">
             Sign in here
           </a>
         </p>
