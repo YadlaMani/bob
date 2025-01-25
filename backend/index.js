@@ -29,7 +29,7 @@ app.listen("5555", () => {
 });
 app.use(
   cors({
-    origin: "https://bobv1.vercel.app",
+    origin: process.env.DEV_ORIGIN,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
