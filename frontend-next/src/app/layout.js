@@ -12,7 +12,7 @@ export default function RootLayout({ children }) {
               <WalletMultiButton />
             </div>
           </nav>
-          <main className="flex-grow p-6">{children}</main>
+          <main className="flex-grow">{children}</main>
         </AppWalletProvider>
       </body>
     </html>

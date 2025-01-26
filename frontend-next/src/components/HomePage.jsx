@@ -2,7 +2,6 @@
 import React from "react";
 import Head from "next/head";
 import Image from "next/image";
-
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 import { motion } from "framer-motion";
 import { CodeBlock } from "@/components/ui/code-block";
@@ -52,14 +51,12 @@ const HomePage = () => {
 
   const testimonials = [
     {
-      quote:
-        "It was the best of times, it was the worst of times, it was the age of wisdom...",
+      quote: "It was the best of times, it was the worst of times, it was the age of wisdom...",
       name: "Charles Dickens",
       title: "A Tale of Two Cities",
     },
     {
-      quote:
-        "To be, or not to be, that is the question: Whether 'tis nobler in the mind...",
+      quote: "To be, or not to be, that is the question: Whether 'tis nobler in the mind...",
       name: "William Shakespeare",
       title: "Hamlet",
     },
@@ -69,14 +66,12 @@ const HomePage = () => {
       title: "A Dream Within a Dream",
     },
     {
-      quote:
-        "It is a truth universally acknowledged, that a single man in possession...",
+      quote: "It is a truth universally acknowledged, that a single man in possession...",
       name: "Jane Austen",
       title: "Pride and Prejudice",
     },
     {
-      quote:
-        "Call me Ishmael. Some years ago—never mind how long precisely—having little...",
+      quote: "Call me Ishmael. Some years ago—never mind how long precisely—having little...",
       name: "Herman Melville",
       title: "Moby-Dick",
     },
@@ -110,8 +105,7 @@ const HomePage = () => {
     },
     {
       title: "The Power of Communication",
-      description:
-        "Understand the impact of effective communication in our lives.",
+      description: "Understand the impact of effective communication in our lives.",
       header: <Skeleton />,
       className: "md:col-span-2",
       icon: <IconTableColumn className="h-4 w-4 text-neutral-500" />,
@@ -119,7 +113,7 @@ const HomePage = () => {
   ];
 
   return (
-    <div className="relative min-h-screen bg-white dark:bg-black">
+    <div className="relative min-h-screen  bg-gray-100 dark:bg-dynamic-black">
       <Head>
         <title>BOB - Decentralized Data Ecosystem</title>
         <meta
@@ -135,7 +129,7 @@ const HomePage = () => {
       </button>
 
       <div className="relative z-10 min-h-screen bg-grid-black/[0.2] dark:bg-grid-white/[0.2] pointer-events-none">
-        <div className="absolute inset-0 flex items-center justify-center dark:bg-black bg-white"></div>
+        <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-black bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
         <div className="relative z-20 flex flex-col items-center justify-center min-h-screen">
           <motion.h1
             className="text-4xl sm:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-500"
@@ -178,8 +172,8 @@ const HomePage = () => {
             <Image
               src="/1.png"
               alt="hero"
-              width={800}
-              height={500}
+              width={1000}
+              height={600}
               className="rounded-lg"
             />
           </motion.div>
@@ -229,6 +223,46 @@ const HomePage = () => {
           direction="right"
           speed="slow"
         />
+      </div>
+
+      <div className=" bg-gray-900 text-white">
+        <div className="container mx-auto px-4 flex items-center">
+          <div className="flex-1 flex justify-center">
+            <img
+              src="/footer.png"
+              alt="Footer Logo"
+              className="h-[24rem] w-auto object-cover"
+            />
+          </div>
+          <div className="flex-1 border-l h-full border-gray-600 flex pl-8">
+            <div className="space-y-4">
+              <a href="#about" className="hover:text-gray-400">
+                About{" "}
+              </a>
+              <a href="#services" className="hover:text-gray-400">
+                {" "}
+                Services{" "}
+              </a>
+              <a href="#contact" className="hover:text-gray-400">
+                {" "}
+                Contact{" "}
+              </a>
+            </div>
+            <div className="space-y-4 mt-8">
+              <a href="https://facebook.com" className="hover:text-gray-400">
+                Facebook{" "}
+              </a>
+              <a href="https://twitter.com" className="hover:text-gray-400">
+                {" "}
+                Twitter{" "}
+              </a>
+              <a href="https://linkedin.com" className="hover:text-gray-400">
+                {" "}
+                LinkedIn{" "}
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
