@@ -112,56 +112,50 @@ const Profile = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black">
-        <Loader2 className="w-8 h-8 animate-spin text-[#FF4001]" />
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+        <Loader2 className="w-8 h-8 animate-spin text-teal-500" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black transition-colors duration-200">
-      <button
-        onClick={toggleDarkMode}
-        className="absolute top-6 right-6 px-4 py-2 text-white bg-[#FF4001] rounded-lg hover:bg-opacity-90 transition z-50"
-      >
-        Toggle Dark Mode
-      </button>
-
+    <div className="min-h-screen bg-gray-100 dark:bg-dynamic-black transition-colors duration-200">
+      
       {user && (
         <>
           {/* Profile Header */}
           <div className="relative">
-            <div className="h-48 bg-gradient-to-r from-[#FF4001] to-[#FF6B4A]"></div>
+            <div className="h-48 bg-gradient-to-r from-teal-500 to-teal-400"></div>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="relative -mt-24">
-                <div className="flex flex-col md:flex-row items-start gap-6 bg-white dark:bg-gray-900 rounded-xl p-6 shadow-lg">
+                <div className="flex flex-col md:flex-row items-start gap-6 bg-white dark:bg-gray-800 rounded-xl p-6 shadow-xl">
                   <motion.img
                     initial={{ opacity: 0, scale: 0.5 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5 }}
                     src={`https://api.dicebear.com/7.x/initials/svg?seed=${user.username}`}
                     alt="Profile"
-                    className="w-32 h-32 rounded-full border-4 border-white dark:border-gray-800"
+                    className="w-32 h-32 rounded-full border-4 border-white dark:border-gray-700"
                   />
                   <div className="flex-1">
                     <div className="flex items-center gap-3">
-                      <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                      <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
                         {user.username}
                       </h1>
-                      <BadgeCheck className="w-6 h-6 text-[#FF4001]" />
+                      <BadgeCheck className="w-6 h-6 text-teal-500" />
                     </div>
                     <p className="text-gray-600 dark:text-gray-400 mt-1">
                       {user.email}
                     </p>
                     <div className="mt-4 flex flex-wrap gap-4">
                       <div className="flex items-center gap-2">
-                        <Wallet className="w-5 h-5 text-[#FF4001]" />
+                        <Wallet className="w-5 h-5 text-teal-500" />
                         <span className="text-gray-700 dark:text-gray-300">
                           Balance: ${user.balance}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Trophy className="w-5 h-5 text-[#FF4001]" />
+                        <Trophy className="w-5 h-5 text-teal-500" />
                         <span className="text-gray-700 dark:text-gray-300">
                           Total Earnings: ${user.earnings}
                         </span>
@@ -169,7 +163,7 @@ const Profile = () => {
                     </div>
                     <button
                       onClick={handleWithdraw}
-                      className="mt-4 px-6 py-2 bg-[#FF4001] text-white rounded-lg hover:bg-opacity-90 transition flex items-center gap-2"
+                      className="mt-4 px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-500 transition flex items-center gap-2"
                     >
                       <Wallet className="w-4 h-4" />
                       Withdraw
@@ -188,7 +182,7 @@ const Profile = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-lg"
+                className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl"
               >
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
                   Earnings History
@@ -208,8 +202,8 @@ const Profile = () => {
                         <Line
                           type="monotone"
                           dataKey="amount"
-                          stroke="#FF4001"
-                          strokeWidth={2}
+                          stroke="#4C6E92"
+                          strokeWidth={3}
                         />
                       </LineChart>
                     </ResponsiveContainer>
@@ -226,7 +220,7 @@ const Profile = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-lg"
+                className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl"
               >
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
                   Created Quests
@@ -237,7 +231,7 @@ const Profile = () => {
                       <a
                         href={`/questStats/${quest._id}`}
                         key={quest._id}
-                        className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
+                        className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition cursor-pointer"
                       >
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
