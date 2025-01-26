@@ -177,6 +177,8 @@ app.post(
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
+      console.log(user);
+      user.quest.push(quest);
 
       // Update user earnings and balance
       const reward = (quest.bounty * 0.95) / quest.attempts;

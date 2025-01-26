@@ -12,6 +12,8 @@ const UserSchema = new Schema({
   earnings: { type: Number, default: 0 },
   balance: { type: Number, default: 0 },
   earningsHistory: [EarningsHistorySchema],
+  percentage: { type: Number, default: 100 },
+  quest: [{ type: Schema.Types.ObjectId, ref: "Quest" }],
 });
 
 const userModel = mongoose.model("User", UserSchema);
