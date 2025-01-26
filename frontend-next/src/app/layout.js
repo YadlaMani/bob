@@ -1,6 +1,6 @@
 import "./globals.css";
 import AppWalletProvider from "@/components/AppWalletProvider";
-
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { Toaster } from "sonner";
 export const metadata = {
   title: "Bob",
@@ -12,7 +12,7 @@ export default function RootLayout({ children }) {
       <body className="flex flex-col min-h-screen">
         <AppWalletProvider>
           <Toaster />
-
+          <Navbar />
           <main className="flex-grow">{children}</main>
         </AppWalletProvider>
       </body>
