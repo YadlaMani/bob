@@ -2,6 +2,7 @@ import "./globals.css";
 import AppWalletProvider from "@/components/AppWalletProvider";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { Toaster } from "sonner";
+import Navbar from "@/components/Navbar";
 export const metadata = {
   title: "Bob",
   description: "Decentralized data labelling platform",
