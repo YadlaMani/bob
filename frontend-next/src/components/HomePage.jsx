@@ -121,12 +121,6 @@ const HomePage = () => {
           content="Link businesses, researchers, and creators with global contributors for quality data labels and crypto rewards."
         />
       </Head>
-      <button
-        onClick={toggleDarkMode}
-        className="absolute top-6 right-6 px-4 py-2 text-white bg-purple-500 rounded hover:bg-purple-600 transition z-50"
-      >
-        Toggle Dark Mode
-      </button>
 
       <div className="relative z-10 min-h-screen bg-grid-black/[0.2] dark:bg-grid-white/[0.2] pointer-events-none">
         <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-black bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
