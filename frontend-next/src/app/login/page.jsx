@@ -1,10 +1,11 @@
 "use client";
-import React, { useState } from "react";
+
 import axios from "axios";
-import { useRouter } from "next/navigation";
-import { Meteors } from "@/components/ui/meteors";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Carousel } from "@/components/ui/Carousel";
+import { useRouter } from "next/navigation";
 
 const Login = () => {
   const [emailOrUsername, setEmailOrUsername] = useState("");
@@ -56,91 +57,83 @@ const Login = () => {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-between bg-black text-white px-6 lg:px-20">
-      {/* Background meteors animation */}
-      <Meteors number={30} className="absolute inset-0 z-0" />
-
+    <div className="flex min-h-screen">
       {/* Left Section */}
-      <div className="w-full max-w-lg lg:w-1/2 text-center lg:text-left z-10">
-        <h1 className="text-4xl font-bold mb-4 text-white">
-          Log In to <span className="text-blue-500">BOB</span>
-        </h1>
-        <p className="text-gray-400 text-lg">
-          Welcome back! Please enter your credentials to continue.
-        </p>
+      <div className="hidden lg:block lg:w-1/2 relative">
+        <Carousel />
       </div>
 
-      {/* Login Form */}
-      <div className="w-full max-w-md bg-gray-900 bg-opacity-80 rounded-lg shadow-lg p-8 lg:w-1/3 z-10 relative">
-        <h2 className="text-2xl font-semibold text-center mb-6 text-white">
-          Log In
-        </h2>
-        <form onSubmit={handleSubmit}>
-          {/* Email or Username */}
-          <div className="mb-4">
-            <Label htmlFor="emailOrUsername" className="text-white">
-              Email or Username
-            </Label>
-            <Input
-              id="emailOrUsername"
-              placeholder="Enter your email or username"
-              type="text"
-              value={emailOrUsername}
-              onChange={(e) => setEmailOrUsername(e.target.value)}
-              className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+      {/* Right Section */}
+      <div className="w-full lg:w-1/2 bg-[#1A1F2C] p-8 lg:p-20 flex flex-col justify-center">
+        <div className="max-w-md w-full mx-auto">
+          <div className="flex justify-between items-center mb-12">
+            <button className="text-white/80 hover:text-white px-4 py-2 rounded-full bg-white/10">
+              Back to website
+            </button>
           </div>
 
-          {/* Password */}
-          <div className="mb-4">
-            <Label htmlFor="password" className="text-white">
-              Password
-            </Label>
-            <Input
-              id="password"
-              placeholder="••••••••"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+          <h1 className="text-4xl font-semibold text-white mb-4">
+            Welcome back
+          </h1>
+          <p className="text-gray-400 mb-8">
+            Don't have an account?{" "}
+            <a href="/register" className="text-white hover:underline">
+              Sign up
+            </a>
+          </p>
 
-          {/* Login Type */}
-          <div className="mb-4">
-            <Label htmlFor="loginType" className="text-white">
-              Login with
-            </Label>
-            <select
-              id="loginType"
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-              className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="email">Email</option>
-              <option value="username">Username</option>
-            </select>
-          </div>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="emailOrUsername" className="text-white">
+                  Email or Username
+                </Label>
+                <Input
+                  id="emailOrUsername"
+                  type="text"
+                  placeholder="Enter your email or username"
+                  className="form-input"
+                  value={emailOrUsername}
+                  onChange={(e) => setEmailOrUsername(e.target.value)}
+                />
+              </div>
 
-          {/* Error Message */}
-          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+              <div>
+                <Label htmlFor="password" className="text-white">
+                  Password
+                </Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  className="form-input"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full bg-gradient-to-br from-blue-600 to-purple-500 text-white font-bold py-3 rounded-lg transition-colors duration-200"
-          >
-            Login
-          </button>
-        </form>
+              <div>
+                <Label htmlFor="loginType" className="text-white">
+                  Login with
+                </Label>
+                <select
+                  id="loginType"
+                  value={type}
+                  onChange={(e) => setType(e.target.value)}
+                  className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus-visible:outline-none focus-visible:ring-[2px]  focus-visible:ring-neutral-400 dark:focus-visible:ring-neutral-600">
+                  <option value="email">Email</option>
+                  <option value="username">Username</option>
+                </select>
+              </div>
+            </div>
 
-        {/* Redirect to Register */}
-        <p className="text-center mt-4 text-sm text-white">
-          Don't have an account?{" "}
-          <a href="/register" className="text-blue-500 hover:underline">
-            Register here
-          </a>
-        </p>
+            <button
+              type="submit"
+              className="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-md transition-colors">
+              Login
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
