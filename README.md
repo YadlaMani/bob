@@ -1,4 +1,4 @@
-# Bob-Decentralized Data Labeling Platform
+# Bob-Crowdsourced Intelligence, Blockchain-Powered Rewards
 DataQuest connects businesses, researchers, and content creators with a global community of contributors through a Solana-powered data labeling marketplace. Get high-quality data labels, feedback, and insights while contributors earn crypto rewards.
 ## ✨ Platform Features
 ### Quest Creation
