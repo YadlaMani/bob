@@ -1,20 +1,9 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import axios from "axios";
 import { toast } from "sonner";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-} from "recharts";
 import {
   Card,
   CardContent,
@@ -28,20 +17,27 @@ import {
   Users,
   Trophy,
   Clock,
-  BarChart2,
   Activity,
   CheckCircle,
   XCircle,
+  Filter,
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
-import html2pdf from "html2pdf.js";
-
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 const QuestStatsPage = () => {
   const [stats, setStats] = useState(null);
   const [quest, setQuest] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [filter, setFilter] = useState("all");
   const params = useParams();
   const questId = params.id;
 
@@ -79,19 +75,83 @@ const QuestStatsPage = () => {
       getStats();
       getQuest();
     }
-  }, [questId]);
+  }, [questId, getStats, getQuest]); // Added getQuest to dependencies
 
-  const downloadPDF = () => {
-    const element = document.getElementById("stats-content");
-    const opt = {
-      margin: 1,
-      filename: `quest-stats-${questId}.pdf`,
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
-    };
+  const generatePDFReport = () => {
+    const doc = new jsPDF();
 
-    html2pdf().set(opt).from(element).save();
+    // Add title
+    doc.setFontSize(20);
+    doc.text(quest.title, 14, 15);
+
+    // Add description
+    doc.setFontSize(12);
+    doc.text(quest.description, 14, 25, { maxWidth: 180 });
+
+    // Add key metrics
+    doc.setFontSize(14);
+    doc.text("Key Metrics", 14, 45);
+
+    const keyMetrics = [
+      ["Total Participants", uniqueParticipants.toString()],
+      ["Participation Rate", `${participationRate.toFixed(1)}%`],
+      ["Completion Rate", `${completionRate.toFixed(1)}%`],
+      ["Avg. Time per Question", `${averageTimePerQuestion}s`],
+      ["Bounty", quest.bounty.toString()],
+    ];
+
+    doc.autoTable({
+      startY: 50,
+      head: [["Metric", "Value"]],
+      body: keyMetrics,
+    });
+
+    // Add question statistics
+    doc.setFontSize(14);
+    doc.text("Question Statistics", 14, doc.lastAutoTable.finalY + 10);
+
+    stats.questionStats.forEach((question, index) => {
+      const questionText = quest.questions[index].text;
+      doc.setFontSize(12);
+      doc.text(
+        `Q${index + 1}: ${questionText}`,
+        14,
+        doc.lastAutoTable.finalY + 20
+      );
+
+      const optionData = question.optionStats.map((option, optionIndex) => [
+        quest.questions[index].options[optionIndex],
+        `${((option.selectedCount / stats.answeredCount) * 100).toFixed(1)}%`,
+        option.selectedCount.toString(),
+      ]);
+
+      doc.autoTable({
+        startY: doc.lastAutoTable.finalY + 25,
+        head: [["Option", "Percentage", "Count"]],
+        body: optionData,
+      });
+    });
+
+    // Add quest information
+    doc.setFontSize(14);
+    doc.text("Quest Information", 14, doc.lastAutoTable.finalY + 10);
+
+    const questInfo = [
+      ["Created By", quest.createdBy.username],
+      ["Created At", new Date(quest.createdAt).toLocaleDateString()],
+      ["Status", quest.status],
+      ["Total Questions", quest.questions.length.toString()],
+      ["Total Attempts", quest.attempts.toString()],
+    ];
+
+    doc.autoTable({
+      startY: doc.lastAutoTable.finalY + 15,
+      head: [["Field", "Value"]],
+      body: questInfo,
+    });
+
+    // Save the PDF
+    doc.save(`quest-stats-${questId}.pdf`);
   };
 
   if (isLoading)
@@ -110,10 +170,23 @@ const QuestStatsPage = () => {
 
   const completionRate =
     (stats.answeredCount / (quest.attempts + stats.answeredCount)) * 100 || 0;
-  const averageTimePerQuestion = 120; // This would come from backend
+  const averageTimePerQuestion = 120; // This should be calculated from actual data
   const uniqueParticipants = new Set(stats.answeredBy).size;
   const participationRate =
     (uniqueParticipants / (quest.attempts + stats.answeredCount)) * 100;
+
+  const filteredQuestions = stats.questionStats.filter((question) => {
+    if (filter === "all") return true;
+    const highestPercentage = Math.max(
+      ...question.optionStats.map(
+        (o) => (o.selectedCount / stats.answeredCount) * 100
+      )
+    );
+    if (filter === "high") return highestPercentage >= 70;
+    if (filter === "medium")
+      return highestPercentage >= 40 && highestPercentage < 70;
+    if (filter === "low") return highestPercentage < 40;
+  });
 
   return (
     <div
@@ -126,7 +199,7 @@ const QuestStatsPage = () => {
           <h1 className="text-4xl font-bold tracking-tight">{quest.title}</h1>
           <p className="text-muted-foreground mt-2">{quest.description}</p>
         </div>
-        <Button onClick={downloadPDF} className="flex items-center gap-2">
+        <Button onClick={generatePDFReport} className="flex items-center gap-2">
           <Download className="h-4 w-4" />
           Export PDF
         </Button>
@@ -157,7 +230,9 @@ const QuestStatsPage = () => {
             <Trophy className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{completionRate}%</div>
+            <div className="text-2xl font-bold">
+              {completionRate.toFixed(1)}%
+            </div>
             <Progress value={completionRate} className="mt-2" />
           </CardContent>
         </Card>
@@ -191,43 +266,68 @@ const QuestStatsPage = () => {
         </Card>
       </div>
 
-      {/* Question Response Distribution */}
+      {/* Question Stats */}
       <Card className="hover:shadow-lg transition-shadow">
         <CardHeader>
-          <CardTitle>Option Selection Distribution</CardTitle>
+          <div className="flex justify-between items-center">
+            <CardTitle>Question Statistics</CardTitle>
+            <div className="flex items-center gap-2">
+              <Filter className="h-4 w-4 text-muted-foreground" />
+              <Select value={filter} onValueChange={setFilter}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Filter questions" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Questions</SelectItem>
+                  <SelectItem value="high">High Consensus (≥70%)</SelectItem>
+                  <SelectItem value="medium">
+                    Medium Consensus (40-69%)
+                  </SelectItem>
+                  <SelectItem value="low">Low Consensus (&lt;40%)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
           <CardDescription>
-            Breakdown of selected options per question
+            Detailed breakdown of each question's performance
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="h-[400px] mt-4">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={stats.questionStats.map((stat, index) => ({
-                  name: `Q${index + 1}`,
-                  ...stat.optionStats.reduce(
-                    (acc, curr) => ({
-                      ...acc,
-                      [`Option ${curr.option}`]: curr.selectedCount,
-                    }),
-                    {}
-                  ),
-                }))}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                {stats.questionStats[0]?.optionStats.map((_, index) => (
-                  <Bar
-                    key={`option-${index}`}
-                    dataKey={`Option ${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="space-y-6">
+            {filteredQuestions.map((question, index) => (
+              <div key={index} className="border-t pt-4">
+                <h3 className="font-semibold mb-2">
+                  Question {index + 1}: {quest.questions[index].text}
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {question.optionStats.map((option, optionIndex) => (
+                    <div key={optionIndex} className="flex flex-col">
+                      <span className="text-sm mb-1">
+                        {quest.questions[index].options[optionIndex]}
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <Progress
+                          value={
+                            (option.selectedCount / stats.answeredCount) * 100
+                          }
+                          className="flex-grow"
+                        />
+                        <span className="text-sm font-medium w-12 text-right">
+                          {(
+                            (option.selectedCount / stats.answeredCount) *
+                            100
+                          ).toFixed(1)}
+                          %
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-2 text-sm text-muted-foreground">
+                  Total responses: {stats.answeredCount}
+                </div>
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>
