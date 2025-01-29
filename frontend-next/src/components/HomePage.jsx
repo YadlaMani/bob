@@ -82,8 +82,9 @@ const HomePage = () => {
   ];
 
   const Skeleton = () => (
-    <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl dark:bg-dot-white/[0.2] bg-dot-black/[0.2] [mask-image:radial-gradient(ellipse_at_center,white,transparent)] border border-transparent dark:border-white/[0.2] bg-neutral-100 dark:bg-black"></div>
+    <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-neutral-100 dark:bg-black border border-transparent"></div>
   );
+  
 
   const bentoItems = [
     {
@@ -93,7 +94,7 @@ const HomePage = () => {
       header: <Skeleton />,
       className: "md:col-span-2",
       icon: <IconClipboardCopy className="h-4 w-4 text-neutral-500" />,
-      image:"/g1.png"
+      image: "/g1.png",
     },
     {
       title: "Variety of Datasets",
@@ -102,7 +103,7 @@ const HomePage = () => {
       header: <Skeleton />,
       className: "md:col-span-1",
       icon: <IconFileBroken className="h-4 w-4 text-neutral-500" />,
-      image:"/g2.png"
+      image: "/g4.png",
     },
     {
       title: " Data Collection & Analysis",
@@ -111,7 +112,7 @@ const HomePage = () => {
       header: <Skeleton />,
       className: "md:col-span-1",
       icon: <IconSignature className="h-4 w-4 text-neutral-500" />,
-      image:"/g3.png"
+      image: "/g3.png",
     },
     {
       title: "Cross-Border Payments",
@@ -120,7 +121,7 @@ const HomePage = () => {
       header: <Skeleton />,
       className: "md:col-span-2",
       icon: <IconTableColumn className="h-4 w-4 text-neutral-500" />,
-      image:"/g4.png"
+      image: "/g2.png",
     },
   ];
 
@@ -143,7 +144,7 @@ const HomePage = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
           >
-          <span className="dark:text-primary">Bob</span>-Decentralized
+            <span className="dark:text-primary">Bob</span>-Decentralized
           </motion.h1>
           <motion.p
             className="mt-4 text-3xl text-gray-600 dark:text-gray-400"
@@ -151,7 +152,7 @@ const HomePage = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 1 }}
           >
-           Crowdsourced Intelligence, Blockchain-Powered Rewards
+            Crowdsourced Intelligence, Blockchain-Powered Rewards
           </motion.p>
         </div>
       </div>
@@ -187,9 +188,9 @@ const HomePage = () => {
 
       <div className="flex items-start space-x-8 p-8">
         <div className="flex-1">
-        <h2 className="text-5xl font-extrabold text-black dark:text-white bg-clip-text">
-  Quest Creation Hub
-</h2>
+          <h2 className="text-5xl font-extrabold text-black dark:text-white bg-clip-text">
+            Quest Creation Hub
+          </h2>
 
           <p className="text-lg text-gray-600 mt-4">
             This section illustrates how the decentralized platform enables
@@ -218,7 +219,6 @@ const HomePage = () => {
               header={item.header}
               className={item.className}
               icon={item.icon}
-              image={item.image}
               image={item.image}
             />
           ))}

@@ -36,7 +36,7 @@ const Navbar = () => {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 mt-5 rounded-lg px-4 py-2 flex  items-center justify-between w-full max-w-4xl mx-auto shadow-md transition-colors duration-300
       ${isDarkMode ? "bg-gray-900 text-white" : "bg-white text-black"} border 
-      ${isDarkMode ? "border-gray-700" : "border-gray-300"}`}
+      ${isDarkMode ? "border-gray-700" : "border-gray-300"} transition-none`}
     >
       {/* Navigation items container */}
       <div className="flex items-center space-x-4 ml-auto flex-grow justify-between">
