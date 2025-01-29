@@ -20,6 +20,8 @@ export default function QuestsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
+  const [otherQuests,setOtherQuests]=useState([]);
+  const [recommended, setRecommended] = useState([]);
 
   async function fetchUser() {
     try {
@@ -68,6 +70,7 @@ export default function QuestsPage() {
       );
 
       setQuests(filteredQuests);
+      categorizeQuests(filteredQuests,user.tags);
     } catch (error) {
       console.error("Error fetching quests:", error);
       setError("Failed to fetch quests. Please try again later.");
@@ -75,6 +78,29 @@ export default function QuestsPage() {
       setLoading(false);
     }
   }
+  const categorizeQuests = (quests, userTags) => {
+    let recommended = [];
+    let otherQuests = [];
+  
+    quests.forEach((quest) => {
+      // Check if at least one tag in `quest.tags` exists in `userTags`
+      const isRecommended = quest.tags.some(tag => userTags.includes(tag));
+  
+      if (isRecommended) {
+        recommended.push(quest);
+      } else {
+        otherQuests.push(quest);
+      }
+    });
+  
+    setRecommended(recommended);
+    setOtherQuests(otherQuests);
+  };
+  
+  
+  console.log("recommended",recommended);
+  console.log("other",otherQuests);
+  
 
   useEffect(() => {
     async function fetchData() {
@@ -99,10 +125,10 @@ export default function QuestsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-8 text-center">Available Quests</h1>
-      {quests && quests.length > 0 ? (
+      <h1 className="text-4xl font-bold mb-8 text-center">Recommended Quests</h1>
+      {recommended && recommended.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {quests.map((quest) => (
+          {recommended.map((quest) => (
             <QuestCard
               key={quest._id}
               quest={quest}
@@ -112,7 +138,23 @@ export default function QuestsPage() {
         </div>
       ) : (
         <p className="text-center text-muted-foreground">
-          No quests available at the moment.
+          No quests match your intrests.
+        </p>
+      )}
+      <h1 className="text-4xl font-bold mb-8 text-center">Other Quests</h1>
+      {otherQuests&& otherQuests.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {otherQuests.map((quest) => (
+            <QuestCard
+              key={quest._id}
+              quest={quest}
+              onClick={() => router.push(`/quests/${quest._id}`)}
+            />
+          ))}
+        </div>
+      ) : (
+        <p className="text-center text-muted-foreground">
+          No other quests.
         </p>
       )}
     </div>

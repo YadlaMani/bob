@@ -119,7 +119,7 @@ app.post("/api/v1/upload", upload.single("file"), async (req, res) => {
 
 //quest routes
 app.post("/api/v1/quests/create", verifyToken, async (req, res) => {
-  let { thumbnail,title, description, questions, bounty, status, attempts } = req.body;
+  let { thumbnail,title, description, questions, bounty, status, attempts,selectedTags } = req.body;
   console.log(req.body);
 
   const createdBy = req.user.username;
@@ -136,6 +136,7 @@ app.post("/api/v1/quests/create", verifyToken, async (req, res) => {
     createdBy: user,
     status,
     attempts,
+    tags:selectedTags
   });
   const createdQuest = await quest.save();
   console.log("Created quest",createdQuest);
