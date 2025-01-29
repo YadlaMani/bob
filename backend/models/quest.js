@@ -5,6 +5,7 @@ const QuestionSchema = new Schema({
   options: [{ type: String }],
 });
 const QuestSchema = new Schema({
+  thumbnail: { type: String, required: true},
   title: { type: String, required: true },
   description: { type: String },
   questions: [QuestionSchema],

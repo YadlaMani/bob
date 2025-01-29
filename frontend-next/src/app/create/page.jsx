@@ -41,6 +41,9 @@ export default function CreateQuestion() {
   const [error, setError] = useState("");
   const [isModalOpen, setModalOpen] = useState(false);
   const [isLoading, setLoading] = useState(true);
+  const [thumbnail, setThumbnail] = useState(null);
+  const [editingIndex, setEditingIndex] = useState(null);
+
 
   useEffect(() => {
     if (!wallet.publicKey) {
@@ -72,11 +75,15 @@ export default function CreateQuestion() {
         }
       );
       const uploadedUrl = response.data;
-      setOptions((prev) => {
-        const newOptions = [...prev];
-        newOptions[index] = uploadedUrl; // Save the image URL in options array
-        return newOptions;
-      });
+      if (index != -1) {
+        setOptions((prev) => {
+          const newOptions = [...prev];
+          newOptions[index] = uploadedUrl; // Save the image URL in options array
+          return newOptions;
+        });
+      } else {
+        setThumbnail(uploadedUrl);
+      }
       toast.success("File uploaded successfully!");
     } catch (error) {
       console.error(error);
@@ -84,22 +91,15 @@ export default function CreateQuestion() {
     }
   };
 
-  const handleAddQuestion = (e) => {
-    e.preventDefault();
-    if (options.length === 0) {
-      setError("Question must have at least one option");
-      return;
-    }
-    const newQuestion = { questionText, type, options: [...options] };
-    setQuestions((prev) => [...prev, newQuestion]);
-    setQuestionText(""); // Reset the question text after adding it.
-    setOptions([]); // Reset the options after adding the question.
-    setError(""); // Clear any previous error.
-  };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(false);
+    if(!thumbnail){
+      setError("Thumbnail is required");
+      return;
+    }
 
     if (!title) {
       setError("Title is required");
@@ -119,6 +119,7 @@ export default function CreateQuestion() {
     }
 
     const questData = {
+      thumbnail,
       title,
       description,
       bounty,
@@ -158,6 +159,45 @@ export default function CreateQuestion() {
       setLoading(true);
     }
   };
+  const handleRemoveQuestion=(index)=>{
+    setQuestions(questions.filter((_, i) => i!== index));
+    toast.success("Question removed successfully!");
+  }
+  const handleEditQuestion = (index) => {
+    setEditingIndex(index);
+    setQuestionText(questions[index].questionText);
+    setOptions([...questions[index].options]);
+    setType(questions[index].type);
+    openModal();
+  };
+  
+  const handleAddOrUpdateQuestion = (e) => {
+    e.preventDefault();
+    
+    if (options.length === 0) {
+      setError("Question must have at least one option");
+      return;
+    }
+  
+    const updatedQuestion = { questionText, type, options: [...options] };
+  
+    if (editingIndex !== null) {
+      // Update existing question
+      setQuestions((prev) =>
+        prev.map((q, i) => (i === editingIndex ? updatedQuestion : q))
+      );
+      setEditingIndex(null);
+    } else {
+      // Add new question
+      setQuestions((prev) => [...prev, updatedQuestion]);
+    }
+  
+    // Reset fields
+    setQuestionText("");
+    setOptions([]);
+    setError("");
+    closeModal();
+  };
 
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
@@ -169,6 +209,17 @@ export default function CreateQuestion() {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            {thumbnail === null ? (
+              <Input type="file" onChange={(e) => handleFileUpload(e, -1)} />
+            ) : (
+              <img
+                src={thumbnail}
+                alt="thumbnail"
+                className="w-[inherit] h-32 object-cover"
+              />
+            )}
+          </div>
           <div>
             <Label htmlFor="title">Title of Quest</Label>
             <Input
@@ -215,6 +266,15 @@ export default function CreateQuestion() {
                       </li>
                     ))}
                   </ul>
+                  <div className="flex justify-end space-x-2">
+                  <Button type="button" className="bg-green-700 hover:bg-green-400" onClick={() => handleEditQuestion(index)}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pen"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg>
+                    </Button>
+                  
+                    <Button type="button" className="bg-red-700 hover:bg-red-400" onClick={() => handleRemoveQuestion(index)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                    </Button>
+                  </div>
                 </AccordionContent>
               </AccordionItem>
             ))}
@@ -245,8 +305,7 @@ export default function CreateQuestion() {
           <Select
             value={status}
             onValueChange={(newValue) => setStatus(newValue)}
-            className="w-full mt-4"
-          >
+            className="w-full mt-4">
             <SelectTrigger>
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
@@ -274,8 +333,8 @@ export default function CreateQuestion() {
 
       {/* Modal for Adding Question */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 overflow-y-auto">
-          <div className="bg-background rounded-lg p-8 w-[90%] max-w-[600px] shadow-lg max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 overflow-y-scroll no-scrollbar">
+          <div className="bg-background rounded-lg p-8 w-[90%] max-w-[600px] shadow-lg max-h-[90vh] overflow-y-scroll no-scrollbar">
             <h3 className="text-xl font-semibold mb-4">Add a Question</h3>
             <div className="space-y-4">
               <Label htmlFor="questionText">Question Text</Label>
@@ -289,8 +348,7 @@ export default function CreateQuestion() {
               <Select
                 value={type}
                 onValueChange={(newType) => setType(newType)}
-                className="mt-2"
-              >
+                className="mt-2">
                 <SelectTrigger>
                   <SelectValue placeholder="Select option type" />
                 </SelectTrigger>
@@ -300,7 +358,7 @@ export default function CreateQuestion() {
                 </SelectContent>
               </Select>
 
-              <div className="max-h-[300px] overflow-y-auto space-y-2 p-2 border rounded-md bg-background">
+              <div className="max-h-[300px] overflow-y-scroll no-scrollbar space-y-2 p-2 border rounded-md bg-background">
                 {options.map((option, index) => (
                   <div key={index} className="flex items-center space-x-2">
                     {type === "text" ? (
@@ -338,8 +396,8 @@ export default function CreateQuestion() {
                 <Button variant="outline" onClick={closeModal}>
                   Close
                 </Button>
-                <Button type="button" onClick={handleAddQuestion}>
-                  Add Question
+                <Button type="button" onClick={handleAddOrUpdateQuestion}>
+                {editingIndex !== null ? "Update Question" : "Add Question"}
                 </Button>
               </div>
             </div>

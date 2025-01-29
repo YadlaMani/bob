@@ -120,7 +120,7 @@ function QuestCard({ quest, onClick }) {
     >
       <div className="relative h-48 overflow-hidden">
         <img
-          src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.HxV79tFMPfBAIo0BBF-sOgHaEy%26pid%3DApi&f=1&ipt=a268266726f41f05a21e0625db3b5e8b0c5b11e7bf23e0bd23ddcc1bb2a259bb&ipo=images"
+          src={quest.thumbnail}
           alt={quest.title}
           className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
         />
