@@ -51,12 +51,14 @@ const HomePage = () => {
 
   const testimonials = [
     {
-      quote: "It was the best of times, it was the worst of times, it was the age of wisdom...",
+      quote:
+        "It was the best of times, it was the worst of times, it was the age of wisdom...",
       name: "Charles Dickens",
       title: "A Tale of Two Cities",
     },
     {
-      quote: "To be, or not to be, that is the question: Whether 'tis nobler in the mind...",
+      quote:
+        "To be, or not to be, that is the question: Whether 'tis nobler in the mind...",
       name: "William Shakespeare",
       title: "Hamlet",
     },
@@ -66,12 +68,14 @@ const HomePage = () => {
       title: "A Dream Within a Dream",
     },
     {
-      quote: "It is a truth universally acknowledged, that a single man in possession...",
+      quote:
+        "It is a truth universally acknowledged, that a single man in possession...",
       name: "Jane Austen",
       title: "Pride and Prejudice",
     },
     {
-      quote: "Call me Ishmael. Some years ago—never mind how long precisely—having little...",
+      quote:
+        "Call me Ishmael. Some years ago—never mind how long precisely—having little...",
       name: "Herman Melville",
       title: "Moby-Dick",
     },
@@ -83,37 +87,49 @@ const HomePage = () => {
 
   const bentoItems = [
     {
-      title: "The Dawn of Innovation",
-      description: "Explore the birth of groundbreaking ideas and inventions.",
+      title: "Solana-Powered Payments",
+      description:
+        "Instant, low-cost cross-border payouts with secure Solana transactions.",
       header: <Skeleton />,
       className: "md:col-span-2",
       icon: <IconClipboardCopy className="h-4 w-4 text-neutral-500" />,
+      image:
+        "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fforkast.news%2Fwp-content%2Fuploads%2F2021%2F08%2FSolana.png&f=1&nofb=1&ipt=e9fdf04ab2e050fed0160156a2b69aaec8a770e5543bae9ada94c2270da23dd5&ipo=images",
     },
     {
-      title: "The Digital Revolution",
-      description: "Dive into the transformative power of technology.",
+      title: "Variety of Datasets",
+      description:
+        "Collect and label diverse datasets for AI, research, and market analysis",
       header: <Skeleton />,
       className: "md:col-span-1",
       icon: <IconFileBroken className="h-4 w-4 text-neutral-500" />,
+      image:
+        "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fforkast.news%2Fwp-content%2Fuploads%2F2021%2F08%2FSolana.png&f=1&nofb=1&ipt=e9fdf04ab2e050fed0160156a2b69aaec8a770e5543bae9ada94c2270da23dd5&ipo=images",
     },
     {
-      title: "The Art of Design",
-      description: "Discover the beauty of thoughtful and functional design.",
+      title: " Data Collection & Analysis",
+      description:
+        "Real-time insights, analytics, and exportable reports for AI-ready data..",
       header: <Skeleton />,
       className: "md:col-span-1",
       icon: <IconSignature className="h-4 w-4 text-neutral-500" />,
+      image:
+        "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fforkast.news%2Fwp-content%2Fuploads%2F2021%2F08%2FSolana.png&f=1&nofb=1&ipt=e9fdf04ab2e050fed0160156a2b69aaec8a770e5543bae9ada94c2270da23dd5&ipo=images",
     },
     {
-      title: "The Power of Communication",
-      description: "Understand the impact of effective communication in our lives.",
+      title: "Cross-Border Payments",
+      description:
+        "Fast, low-cost Solana transactions for seamless global contributor payouts",
       header: <Skeleton />,
       className: "md:col-span-2",
       icon: <IconTableColumn className="h-4 w-4 text-neutral-500" />,
+      image:
+        "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fforkast.news%2Fwp-content%2Fuploads%2F2021%2F08%2FSolana.png&f=1&nofb=1&ipt=e9fdf04ab2e050fed0160156a2b69aaec8a770e5543bae9ada94c2270da23dd5&ipo=images",
     },
   ];
 
   return (
-    <div className="relative min-h-screen  bg-gray-100 dark:bg-dynamic-black">
+    <div className="relative min-h-screen ">
       <Head>
         <title>BOB - Decentralized Data Ecosystem</title>
         <meta
@@ -131,16 +147,15 @@ const HomePage = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
           >
-            Bob-Decentralized Data Labeling Platform
+          <span className="dark:text-primary">Bob</span>-Decentralized
           </motion.h1>
           <motion.p
-            className="mt-4 text-lg text-gray-600 dark:text-gray-400"
+            className="mt-4 text-3xl text-gray-600 dark:text-gray-400"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 1 }}
           >
-            Link businesses, researchers, and creators with global contributors
-            for quality data labels and crypto rewards.
+           Crowdsourced Intelligence, Blockchain-Powered Rewards
           </motion.p>
         </div>
       </div>
@@ -176,9 +191,10 @@ const HomePage = () => {
 
       <div className="flex items-start space-x-8 p-8">
         <div className="flex-1">
-          <h2 className="text-5xl font-extrabold text-transparent bg-clip-text text-white">
-            Quest Creation Hub
-          </h2>
+        <h2 className="text-5xl font-extrabold text-black dark:text-white bg-clip-text">
+  Quest Creation Hub
+</h2>
+
           <p className="text-lg text-gray-600 mt-4">
             This section illustrates how the decentralized platform enables
             businesses, researchers, and content creators to manage quests for
@@ -206,6 +222,7 @@ const HomePage = () => {
               header={item.header}
               className={item.className}
               icon={item.icon}
+              image={item.image}
             />
           ))}
         </BentoGrid>
