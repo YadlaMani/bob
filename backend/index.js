@@ -194,7 +194,9 @@ app.post(
 
       // Update quest attempts
       quest.attempts -= 1;
-
+      if (quest.attempts == 0) {
+        quest.status = "closed";
+      }
       // Save the updated documents
       await user.save();
       await quest.save();
