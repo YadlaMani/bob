@@ -28,6 +28,7 @@ function App() {
   const wallet = useWallet();
   const params = useParams();
   const id = params.id;
+  // console.log();
 
   useEffect(() => {
     async function fetchQuest() {
@@ -132,7 +133,7 @@ function App() {
     setAnswers({});
     setBountyEarned(0);
   };
-
+  
   if (isTestCompleted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-purple-50 flex items-center justify-center p-4 mt-4">
@@ -205,6 +206,8 @@ function App() {
 
   const currentQuestion = quest?.questions[currentQuestionIndex];
   const progress = ((currentQuestionIndex + 1) / quest?.questions.length) * 100;
+
+  console.log("current question",currentQuestion);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-purple-50 p-6 ">
