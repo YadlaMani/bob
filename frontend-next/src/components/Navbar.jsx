@@ -5,11 +5,13 @@ import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const Navbar = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [token, setToken] = useState(null);
   const router = useRouter();
+  const [loading,setLoading]=useState(true);
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
@@ -29,6 +31,7 @@ const Navbar = () => {
   function callLogout() {
     localStorage.removeItem("token");
     window.location.reload();
+    toast.success("Logged out successfully");
     router.push("/");
   }
 
@@ -84,7 +87,8 @@ const Navbar = () => {
             onClick={callLogout}
             className="px-4 h-10 text-base font-medium"
           >
-            Logout
+           Logout
+            
           </Button>
         ) : (
           <Button

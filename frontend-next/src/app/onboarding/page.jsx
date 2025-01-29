@@ -26,6 +26,7 @@ import axios from "axios";
 import { toast } from "sonner";
 
 import { useRouter } from "next/navigation";
+import Loading from "../loading";
 const OnboardingPage = () => {
   const [joinAs, setJoinAs] = useState("both");
   const [tags, setTags] = useState([]);
@@ -33,6 +34,7 @@ const OnboardingPage = () => {
   const [ageGroup, setAgeGroup] = useState("");
   const [country, setCountry] = useState("");
   const [user, setUser] = useState(null);
+  const [isLoading,setIsLoading]=useState(true);
   const router = useRouter();
   async function functionfetchUserDetails() {
     const response = await axios.get(
@@ -61,6 +63,7 @@ const OnboardingPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(false);
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/user/onboarding`,
@@ -75,6 +78,8 @@ const OnboardingPage = () => {
       toast.success(response.data.message);
     } catch (err) {
       toast.error(err);
+    }finally{
+      setIsLoading(true);
     }
   };
   useEffect(() => {
@@ -172,15 +177,17 @@ const OnboardingPage = () => {
                   </SelectContent>
                 </Select>
               </div>
-
-              <Button type="submit" className="w-full">
+              {isLoading?<Button type="submit" className="w-full">
                 Complete Onboarding
-              </Button>
+              </Button>:<Button type="submit" className="w-full" disabled>
+                Loading...
+              </Button>}
+              
             </form>
           </CardContent>
         </Card>
       ) : (
-        <div>Loading...</div>
+        <Loading/>
       )}
     </div>
   );
