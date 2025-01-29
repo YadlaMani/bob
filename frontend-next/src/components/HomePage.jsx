@@ -113,7 +113,7 @@ const HomePage = () => {
   ];
 
   return (
-    <div className="relative min-h-screen  bg-gray-100 dark:bg-dynamic-black">
+    <div className="relative min-h-screen ">
       <Head>
         <title>BOB - Decentralized Data Ecosystem</title>
         <meta
@@ -176,9 +176,10 @@ const HomePage = () => {
 
       <div className="flex items-start space-x-8 p-8">
         <div className="flex-1">
-          <h2 className="text-5xl font-extrabold text-transparent bg-clip-text text-white">
-            Quest Creation Hub
-          </h2>
+        <h2 className="text-5xl font-extrabold text-black dark:text-white bg-clip-text">
+  Quest Creation Hub
+</h2>
+
           <p className="text-lg text-gray-600 mt-4">
             This section illustrates how the decentralized platform enables
             businesses, researchers, and content creators to manage quests for

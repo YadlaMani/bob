@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { FaMoon, FaSun } from "react-icons/fa";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 
 const Navbar = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -48,7 +49,7 @@ const Navbar = () => {
           Login/Signup
         </a>
         <a className="px-2 py-1" href="#">
-          Wallet
+          <WalletMultiButton></WalletMultiButton>
         </a>
       </div>
     </nav>
