@@ -49,13 +49,16 @@ const Navbar = () => {
       </Link>
       <div className="flex items-center space-x-4">
         <Button variant="ghost" asChild className="text-base font-medium">
-          <Link href="/quests">Quests</Link>
+          <Link href="/quests">Quest</Link>
         </Button>
         <Button variant="ghost" asChild className="text-base font-medium">
           <Link href="/create">Create</Link>
         </Button>
         <Button variant="ghost" asChild className="text-base font-medium">
-          <Link href="/dashboard">Dashboard</Link>
+          <Link href="/profile">Dashboard</Link>
+        </Button>
+        <Button variant="ghost" asChild className="text-base font-medium">
+          <Link href="/leaderboard">Leaderboard</Link>
         </Button>
 
         {/* Theme toggle button */}
