@@ -40,6 +40,7 @@ const QuestSchema = new Schema({
       "Dancing", "Stand_Up_Comedy", "Astrology", "Mythology", "Volunteering"
   ],
   
+  }
 });
 const questModel = mongoose.model("Quest", QuestSchema);
 export default questModel;
