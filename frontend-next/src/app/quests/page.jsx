@@ -16,18 +16,58 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function QuestsPage() {
-  const [quests, setQuests] = useState(null);
+  const [quests, setQuests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [user, setUser] = useState(null);
 
-  async function fetchQuests() {
+  async function fetchUser() {
+    try {
+      setLoading(true);
+      if (!localStorage.getItem("token")) return;
+
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/user`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+
+      console.log("Fetched user:", response.data[0]);
+      setUser(response.data[0]);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      setError("Failed to fetch user. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function fetchQuests(userData) {
     try {
       setLoading(true);
       setError(null);
+
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/quests`
       );
-      setQuests(response.data);
+
+      let allQuests = response.data;
+      console.log("Fetched quests:", allQuests);
+
+      // If user data is missing, show all quests
+      if (!userData || !userData.quest) {
+        setQuests(allQuests);
+        return;
+      }
+
+      // Filter out completed quests
+      const completedQuestIds = new Set(userData.quest.map((q) => q._id));
+      const filteredQuests = allQuests.filter(
+        (quest) => !completedQuestIds.has(quest._id)
+      );
+
+      setQuests(filteredQuests);
     } catch (error) {
       console.error("Error fetching quests:", error);
       setError("Failed to fetch quests. Please try again later.");
@@ -37,8 +77,17 @@ export default function QuestsPage() {
   }
 
   useEffect(() => {
-    fetchQuests();
+    async function fetchData() {
+      await fetchUser(); // Fetch user first
+    }
+    fetchData();
   }, []);
+
+  useEffect(() => {
+    if (user !== null) {
+      fetchQuests(user); // Fetch quests only when user is loaded
+    }
+  }, [user]);
 
   if (loading) {
     return <SkeletonLoader />;

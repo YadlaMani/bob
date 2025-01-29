@@ -21,7 +21,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-
+import { useRouter } from "next/navigation";
 function App() {
   const [quest, setQuest] = useState(null);
   const [isTestStarted, setIsTestStarted] = useState(false);
@@ -34,6 +34,7 @@ function App() {
   const wallet = useWallet();
   const params = useParams();
   const id = params.id;
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchQuest() {
@@ -142,6 +143,7 @@ function App() {
     setSelectedAnswer(null);
     setAnswers({});
     setBountyEarned(0);
+    router.push("/profile");
   };
 
   if (isTestCompleted) {

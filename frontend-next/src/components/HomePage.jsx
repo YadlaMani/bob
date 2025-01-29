@@ -52,50 +52,40 @@ const HomePage = () => {
 
   const testimonials = [
     {
-      quote:
-        "It was the best of times, it was the worst of times, it was the age of wisdom...",
-      name: "Charles Dickens",
-      title: "A Tale of Two Cities",
+      imageUrl: "/test1.png", 
+      altText: "Charles Dickens",
     },
     {
-      quote:
-        "To be, or not to be, that is the question: Whether 'tis nobler in the mind...",
-      name: "William Shakespeare",
-      title: "Hamlet",
+      imageUrl: "/test2.png", 
+      altText: "William Shakespeare",
     },
     {
-      quote: "All that we see or seem is but a dream within a dream.",
-      name: "Edgar Allan Poe",
-      title: "A Dream Within a Dream",
+      imageUrl: "/test3.png", 
+      altText: "Edgar Allan Poe",
     },
     {
-      quote:
-        "It is a truth universally acknowledged, that a single man in possession...",
-      name: "Jane Austen",
-      title: "Pride and Prejudice",
+      imageUrl: "/test4.png", 
+      altText: "Jane Austen",
     },
     {
-      quote:
-        "Call me Ishmael. Some years ago—never mind how long precisely—having little...",
-      name: "Herman Melville",
-      title: "Moby-Dick",
+      imageUrl: "/test5.png", 
+      altText: "Herman Melville",
     },
   ];
-
+  
   const Skeleton = () => (
-    <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl dark:bg-dot-white/[0.2] bg-dot-black/[0.2] [mask-image:radial-gradient(ellipse_at_center,white,transparent)] border border-transparent dark:border-white/[0.2] bg-neutral-100 dark:bg-black"></div>
+    <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-neutral-100 dark:bg-black border border-transparent"></div>
   );
 
   const bentoItems = [
     {
       title: "Solana-Powered Payments",
       description:
-        "Instant, low-cost cross-border payouts with secure Solana transactions.",
+        "Instant, low-cost cross-border payouts with secure Solana transactions.",
       header: <Skeleton />,
       className: "md:col-span-2",
       icon: <IconClipboardCopy className="h-4 w-4 text-neutral-500" />,
-      image:
-        "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fforkast.news%2Fwp-content%2Fuploads%2F2021%2F08%2FSolana.png&f=1&nofb=1&ipt=e9fdf04ab2e050fed0160156a2b69aaec8a770e5543bae9ada94c2270da23dd5&ipo=images",
+      image: "/g1.png",
     },
     {
       title: "Variety of Datasets",
@@ -104,8 +94,7 @@ const HomePage = () => {
       header: <Skeleton />,
       className: "md:col-span-1",
       icon: <IconFileBroken className="h-4 w-4 text-neutral-500" />,
-      image:
-        "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fforkast.news%2Fwp-content%2Fuploads%2F2021%2F08%2FSolana.png&f=1&nofb=1&ipt=e9fdf04ab2e050fed0160156a2b69aaec8a770e5543bae9ada94c2270da23dd5&ipo=images",
+      image: "/g4.png",
     },
     {
       title: " Data Collection & Analysis",
@@ -114,18 +103,16 @@ const HomePage = () => {
       header: <Skeleton />,
       className: "md:col-span-1",
       icon: <IconSignature className="h-4 w-4 text-neutral-500" />,
-      image:
-        "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fforkast.news%2Fwp-content%2Fuploads%2F2021%2F08%2FSolana.png&f=1&nofb=1&ipt=e9fdf04ab2e050fed0160156a2b69aaec8a770e5543bae9ada94c2270da23dd5&ipo=images",
+      image: "/g3.png",
     },
     {
       title: "Cross-Border Payments",
       description:
-        "Fast, low-cost Solana transactions for seamless global contributor payouts",
+        "Fast, low-cost Solana transactions for seamless global contributor payouts",
       header: <Skeleton />,
       className: "md:col-span-2",
       icon: <IconTableColumn className="h-4 w-4 text-neutral-500" />,
-      image:
-        "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fforkast.news%2Fwp-content%2Fuploads%2F2021%2F08%2FSolana.png&f=1&nofb=1&ipt=e9fdf04ab2e050fed0160156a2b69aaec8a770e5543bae9ada94c2270da23dd5&ipo=images",
+      image: "/g2.png",
     },
   ];
 
@@ -158,6 +145,7 @@ const HomePage = () => {
           >
             Crowdsourced Intelligence, Blockchain-Powered Rewards
           </motion.p>
+
         </div>
       </div>
 
@@ -180,11 +168,11 @@ const HomePage = () => {
             transition={{ delay: 0.5, duration: 1 }}
           >
             <Image
-              src="/1.png"
+              src="/dash.png"
               alt="hero"
               width={1000}
-              height={600}
-              className="rounded-lg"
+              height={1000}
+              className="rounded-lg object-cover"
             />
           </motion.div>
         </ContainerScroll>
@@ -214,6 +202,9 @@ const HomePage = () => {
       </div>
 
       <div className="py-16">
+        <h2 className="text-5xl font-extrabold text-center text-black dark:text-white mb-8">
+          Why<span className="dark:text-primary"> Bob</span>
+        </h2>
         <BentoGrid className="max-w-4xl mx-auto md:auto-rows-[20rem]">
           {bentoItems.map((item, i) => (
             <BentoGridItem
