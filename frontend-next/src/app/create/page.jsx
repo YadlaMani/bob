@@ -40,7 +40,7 @@ export default function CreateQuestion() {
   const [attempts, setAttempts] = useState(0);
   const [error, setError] = useState("");
   const [isModalOpen, setModalOpen] = useState(false);
-  const [isLoading,setLoading] = useState(true);
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!wallet.publicKey) {
@@ -109,7 +109,7 @@ export default function CreateQuestion() {
       setError("Description is required");
       return;
     }
-    if (!bounty || isNaN(parseFloat(bounty))) {
+    if (!bounty || isNaN(Number.parseFloat(bounty))) {
       setError("Bounty is required and should be a valid number");
       return;
     }
@@ -128,7 +128,7 @@ export default function CreateQuestion() {
     };
 
     try {
-      const lamports = parseFloat(bounty) * LAMPORTS_PER_SOL;
+      const lamports = Number.parseFloat(bounty) * LAMPORTS_PER_SOL;
       const transaction = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey: wallet.publicKey,
@@ -154,7 +154,7 @@ export default function CreateQuestion() {
       console.error(error);
       setError("Something went wrong");
       toast.error("Failed to create quest");
-    }finally{
+    } finally {
       setLoading(true);
     }
   };
@@ -163,7 +163,7 @@ export default function CreateQuestion() {
   const closeModal = () => setModalOpen(false);
 
   return (
-    <Card className="w-[800px] mx-auto my-6 p-4">
+    <Card className="w-[800px] mx-auto my-6 p-4 bg-background">
       <CardHeader>
         <CardTitle>Create a Quest</CardTitle>
       </CardHeader>
@@ -207,7 +207,7 @@ export default function CreateQuestion() {
                           option
                         ) : (
                           <img
-                            src={option}
+                            src={option || "/placeholder.svg"}
                             alt={`Option ${idx + 1}`}
                             className="w-32 h-32 object-cover"
                           />
@@ -257,31 +257,25 @@ export default function CreateQuestion() {
             </SelectContent>
           </Select>
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && <p className="text-destructive text-sm">{error}</p>}
 
           <div className="flex justify-between mt-6">
             <Button variant="outline" onClick={() => router.push("/")}>
               Cancel
             </Button>
-            {
-              isLoading? (
-                <Button type="submit">Create Quest</Button>
-              ) : (
-                
-                <Button  disabled>
-                  Creating Quest...
-                </Button>
-              )
-            }
-           
+            {isLoading ? (
+              <Button type="submit">Create Quest</Button>
+            ) : (
+              <Button disabled>Creating Quest...</Button>
+            )}
           </div>
         </form>
       </CardContent>
 
       {/* Modal for Adding Question */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8 w-[600px] shadow-lg">
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 overflow-y-auto">
+          <div className="bg-background rounded-lg p-8 w-[90%] max-w-[600px] shadow-lg max-h-[90vh] overflow-y-auto">
             <h3 className="text-xl font-semibold mb-4">Add a Question</h3>
             <div className="space-y-4">
               <Label htmlFor="questionText">Question Text</Label>
@@ -306,34 +300,35 @@ export default function CreateQuestion() {
                 </SelectContent>
               </Select>
 
-              {options.map((option, index) => (
-                <div key={index} className="flex items-center space-x-2 mt-2">
-                  {type === "text" ? (
-                    <Input
-                      type="text"
-                      value={option}
-                      placeholder={`Option ${index + 1}`}
-                      onChange={(e) => handleOptionChange(e, index)}
-                    />
-                  ) : (
-                    <div>
-        {/* This will render the image if the option is a URL */}
-        {option && option.startsWith('http') ? (
-          <img
-            src={option}
-            alt={`Option ${index + 1}`}
-            className="w-32 h-32 object-cover border rounded"
-          />
-        ) : (
-          <Input
-            type="file"
-            onChange={(e) => handleFileUpload(e, index)}
-          />
-        )}
-      </div>
-                  )}
-                </div>
-              ))}
+              <div className="max-h-[300px] overflow-y-auto space-y-2 p-2 border rounded-md bg-background">
+                {options.map((option, index) => (
+                  <div key={index} className="flex items-center space-x-2">
+                    {type === "text" ? (
+                      <Input
+                        type="text"
+                        value={option}
+                        placeholder={`Option ${index + 1}`}
+                        onChange={(e) => handleOptionChange(e, index)}
+                      />
+                    ) : (
+                      <div>
+                        {option && option.startsWith("http") ? (
+                          <img
+                            src={option || "/placeholder.svg"}
+                            alt={`Option ${index + 1}`}
+                            className="w-32 h-32 object-cover border rounded"
+                          />
+                        ) : (
+                          <Input
+                            type="file"
+                            onChange={(e) => handleFileUpload(e, index)}
+                          />
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
 
               <Button type="button" onClick={handleAddOption} className="mt-2">
                 + Add Option
