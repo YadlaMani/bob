@@ -33,11 +33,15 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 mt-5 rounded-lg px-4 py-2 flex items-center justify-between w-full max-w-3xl mx-auto shadow-md transition-colors duration-300
+      className={`fixed top-0 left-0 right-0 z-50 mt-5 rounded-lg px-4 py-2 flex items-center justify-between w-full max-w-4xl mx-auto shadow-md transition-colors duration-300
       ${isDarkMode ? "bg-gray-900 text-white" : "bg-white text-black"} border 
       ${isDarkMode ? "border-gray-700" : "border-gray-300"}`}
     >
-      <Link href="/" className="flex items-center space-x-2">
+     
+
+      {/* Navigation items container */}
+      <div className="flex items-center space-x-4 ml-auto flex-grow justify-between">
+      <Link href="/" className="flex items-center space-x-2 mr-4">
         <img
           alt="Logo"
           className="rounded-full"
@@ -47,7 +51,6 @@ const Navbar = () => {
         />
         <span className="font-semibold text-xl">Bob</span>
       </Link>
-      <div className="flex items-center space-x-2">
         <Button variant="ghost" asChild className="text-base font-medium">
           <Link href="/quests">Quest</Link>
         </Button>
@@ -60,23 +63,27 @@ const Navbar = () => {
         <Button variant="ghost" asChild className="text-base font-medium">
           <Link href="/leaderboard">Leaderboard</Link>
         </Button>
+
+        {/* Theme toggle button */}
         <Button
           variant="ghost"
           size="icon"
           onClick={toggleTheme}
-          className="w-8 h-8 p-0"
+          className="w-10 h-10 p-0 flex items-center justify-center"
         >
           {isDarkMode ? (
-            <FaSun className="h-4 w-4" />
+            <FaSun className="h-5 w-5" />
           ) : (
-            <FaMoon className="h-4 w-4" />
+            <FaMoon className="h-5 w-5" />
           )}
         </Button>
+
+        {/* Logout or Login Button */}
         {token ? (
           <Button
             variant="destructive"
             onClick={callLogout}
-            className="px-3 h-8 text-base font-medium"
+            className="px-4 h-10 text-base font-medium"
           >
             Logout
           </Button>
@@ -84,12 +91,14 @@ const Navbar = () => {
           <Button
             variant="secondary"
             asChild
-            className="px-3 h-8 text-base font-medium"
+            className="px-4 h-10 text-base font-medium"
           >
             <Link href="/login">Login/Signup</Link>
           </Button>
         )}
-        <WalletMultiButton className="!bg-purple-500 hover:!bg-purple-600 rounded-md px-3 h-8 text-base font-medium" />
+
+        {/* Wallet multi-button */}
+        <WalletMultiButton className="!bg-purple-500 hover:!bg-purple-600 rounded-md px-4 h-10 text-base font-medium" />
       </div>
     </nav>
   );
