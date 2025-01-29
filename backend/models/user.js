@@ -14,6 +14,21 @@ const UserSchema = new Schema({
   earningsHistory: [EarningsHistorySchema],
   percentage: { type: Number, default: 100 },
   quest: [{ type: Schema.Types.ObjectId, ref: "Quest" }],
+  joinAs: {
+    type: String,
+    enum: ["both", "organization", "contributor"],
+    default: "both",
+  },
+  ageGroup: {
+    type: String,
+    enum: ["18-24", "25-34", "35-44", "45-54", "55+"],
+    default: "18-24",
+  },
+  country: {
+    type: String,
+    default: "IN",
+  },
+  tags: [{ type: String }],
 });
 
 const userModel = mongoose.model("User", UserSchema);

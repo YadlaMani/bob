@@ -7,6 +7,7 @@ export const metadata = {
   title: "Bob",
   description: "Decentralized data labelling platform",
 };
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">

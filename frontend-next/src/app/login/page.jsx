@@ -12,18 +12,16 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [type, setType] = useState("email");
-  const router = useRouter(); // Updated for proper navigation
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Client-side validation
     if (!emailOrUsername || !password) {
       setError("All fields are required");
       return;
     }
 
-    // Clear previous error
     setError("");
 
     try {
@@ -43,13 +41,10 @@ const Login = () => {
 
       const { token } = response.data;
 
-      // Store the token securely (localStorage here, but httpOnly cookies are safer)
       localStorage.setItem("token", token);
 
-      // Redirect to the homepage
       router.push("/");
     } catch (err) {
-      // Enhanced error handling
       setError(
         err?.response?.data?.message || err.message || "Something went wrong"
       );
@@ -58,12 +53,10 @@ const Login = () => {
 
   return (
     <div className="flex min-h-screen">
-      {/* Left Section */}
       <div className="hidden lg:block lg:w-1/2 relative">
         <Carousel />
       </div>
 
-      {/* Right Section */}
       <div className="w-full lg:w-1/2 bg-[#1A1F2C] p-8 lg:p-20 flex flex-col justify-center">
         <div className="max-w-md w-full mx-auto">
           <div className="flex justify-between items-center mb-12">
@@ -120,7 +113,8 @@ const Login = () => {
                   id="loginType"
                   value={type}
                   onChange={(e) => setType(e.target.value)}
-                  className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus-visible:outline-none focus-visible:ring-[2px]  focus-visible:ring-neutral-400 dark:focus-visible:ring-neutral-600">
+                  className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus-visible:outline-none focus-visible:ring-[2px]  focus-visible:ring-neutral-400 dark:focus-visible:ring-neutral-600"
+                >
                   <option value="email">Email</option>
                   <option value="username">Username</option>
                 </select>
@@ -129,7 +123,8 @@ const Login = () => {
 
             <button
               type="submit"
-              className="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-md transition-colors">
+              className="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-md transition-colors"
+            >
               Login
             </button>
           </form>
