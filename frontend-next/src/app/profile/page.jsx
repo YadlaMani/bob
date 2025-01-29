@@ -20,6 +20,7 @@ import {
 import axios from "axios";
 import { toast } from "sonner";
 import { useWallet } from "@solana/wallet-adapter-react";
+import Loading from "../loading";
 
 const Profile = () => {
   // Redirect to login if token is missing
@@ -112,9 +113,7 @@ const Profile = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-        <Loader2 className="w-8 h-8 animate-spin text-teal-500" />
-      </div>
+      <Loading/>
     );
   }
 

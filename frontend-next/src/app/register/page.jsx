@@ -12,9 +12,11 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(false);
 
     setError("");
 
@@ -40,6 +42,8 @@ const Register = () => {
       toast.error("Something went wrong");
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -56,8 +60,7 @@ const Register = () => {
           <div className="flex justify-between items-center mb-12">
             <a
               href="/"
-              className="text-white/80 hover:text-white px-4 py-2 rounded-full bg-white/10"
-            >
+              className="text-white/80 hover:text-white px-4 py-2 rounded-full bg-white/10">
               Back to website
             </a>
           </div>
@@ -116,13 +119,20 @@ const Register = () => {
                 />
               </div>
             </div>
-
-            <button
-              type="submit"
-              className="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-md transition-colors"
-            >
-              Create account
-            </button>
+            {loading ? (
+              <button
+                type="submit"
+                className="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-md transition-colors">
+                Create account
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-md transition-colors"
+                disabled>
+                Loading...
+              </button>
+            )}
           </form>
         </div>
       </div>

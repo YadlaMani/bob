@@ -1,11 +1,11 @@
 "use client";
-
 import axios from "axios";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Carousel } from "@/components/ui/Carousel";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const Login = () => {
   const [emailOrUsername, setEmailOrUsername] = useState("");
@@ -13,9 +13,11 @@ const Login = () => {
   const [error, setError] = useState("");
   const [type, setType] = useState("email");
   const router = useRouter();
+  const [loading,setLoading]=useState(true);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(false);
 
     if (!emailOrUsername || !password) {
       setError("All fields are required");
@@ -42,12 +44,16 @@ const Login = () => {
       const { token } = response.data;
 
       localStorage.setItem("token", token);
-
       router.push("/");
+      toast.success("Logged in successfully");
+      
     } catch (err) {
       setError(
         err?.response?.data?.message || err.message || "Something went wrong"
       );
+    }finally{
+      setLoading(true);
+      
     }
   };
 
@@ -120,13 +126,19 @@ const Login = () => {
                 </select>
               </div>
             </div>
-
-            <button
+          {loading?<button
               type="submit"
               className="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-md transition-colors"
             >
               Login
-            </button>
+            </button>:<button
+              type="submit"
+              className="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-md transition-colors"
+              disabled
+            >
+              Loading...
+            </button>}
+            
           </form>
         </div>
       </div>
