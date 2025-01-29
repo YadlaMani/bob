@@ -88,6 +88,7 @@ const HomePage = () => {
       header: <Skeleton />,
       className: "md:col-span-2",
       icon: <IconClipboardCopy className="h-4 w-4 text-neutral-500" />,
+      image:"/g1.png"
     },
     {
       title: "The Digital Revolution",
@@ -95,6 +96,7 @@ const HomePage = () => {
       header: <Skeleton />,
       className: "md:col-span-1",
       icon: <IconFileBroken className="h-4 w-4 text-neutral-500" />,
+      image:"/g2.png"
     },
     {
       title: "The Art of Design",
@@ -102,6 +104,7 @@ const HomePage = () => {
       header: <Skeleton />,
       className: "md:col-span-1",
       icon: <IconSignature className="h-4 w-4 text-neutral-500" />,
+      image:"/g3.png"
     },
     {
       title: "The Power of Communication",
@@ -109,6 +112,7 @@ const HomePage = () => {
       header: <Skeleton />,
       className: "md:col-span-2",
       icon: <IconTableColumn className="h-4 w-4 text-neutral-500" />,
+      image:"/g4.png"
     },
   ];
 
@@ -206,6 +210,7 @@ const HomePage = () => {
               header={item.header}
               className={item.className}
               icon={item.icon}
+              image={item.image}
             />
           ))}
         </BentoGrid>
