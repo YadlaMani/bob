@@ -51,7 +51,11 @@ app.post("/api/v1/signup", async (req, res) => {
   const user = new userModel({ username, email, password: hashedPassword });
   try {
     await user.save();
-    res.send("User Registered Successfully");
+    const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET);
+    res.status(200).json({
+      message: "Registration successful continue with onboarding",
+      token: token,
+    });
   } catch (err) {
     console.log(err.message);
     res.status(500).send(err);
@@ -232,7 +236,8 @@ app.get("/api/v1/user/quests", verifyToken, async (req, res) => {
 });
 app.post("/api/v1/user/withdraw", verifyToken, async (req, res) => {
   try {
-    const username = "test";
+    const username = req.user.username;
+    // const username = "test";
     const toAddress = req.body.pubKey;
     const user = await userModel.findOne({ username });
     if (!user) {
@@ -254,5 +259,26 @@ app.post("/api/v1/user/withdraw", verifyToken, async (req, res) => {
     res
       .status(500)
       .json({ message: "Withdrawal failed", error: error.message });
+  }
+});
+app.post("/api/v1/user/onboarding", async (req, res) => {
+  const username = req.body.username;
+  console.log(req.body);
+  try {
+    const user = await userModel.findOne({
+      username,
+    });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const { joinAs, ageGroup, country, tags } = req.body;
+    user.joinAs = joinAs;
+    user.ageGroup = ageGroup;
+    user.country = country;
+    user.tags = tags;
+    await user.save();
+    res.status(200).json({ message: "Onboarding successful" });
+  } catch (err) {
+    console.log(err.message);
   }
 });
