@@ -120,7 +120,6 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-dynamic-black transition-colors duration-200">
-      
       {user && (
         <>
           {/* Profile Header */}
@@ -160,6 +159,31 @@ const Profile = () => {
                           Total Earnings: ${user.earnings}
                         </span>
                       </div>
+                      {/* New Fields */}
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-5 h-5 text-teal-500" />
+                        <span className="text-gray-700 dark:text-gray-300">
+                          Join As: {user.joinAs}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-5 h-5 text-teal-500" />
+                        <span className="text-gray-700 dark:text-gray-300">
+                          Age Group: {user.ageGroup}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-5 h-5 text-teal-500" />
+                        <span className="text-gray-700 dark:text-gray-300">
+                          Country: {user.country}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-5 h-5 text-teal-500" />
+                        <span className="text-gray-700 dark:text-gray-300">
+                          Tags: {user.tags.join(", ")}
+                        </span>
+                      </div>
                     </div>
                     <button
                       onClick={handleWithdraw}
@@ -182,7 +206,7 @@ const Profile = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl"
+                className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl flex flex-col justify-between"
               >
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
                   Earnings History
@@ -220,12 +244,12 @@ const Profile = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl"
+                className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl flex flex-col justify-between"
               >
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
                   Created Quests
                 </h2>
-                <div className="space-y-4">
+                <div className="space-y-4 overflow-auto">
                   {quests.length > 0 ? (
                     quests.map((quest) => (
                       <a
@@ -248,23 +272,55 @@ const Profile = () => {
                               {quest.status}
                             </span>
                           </div>
-                          <div className="mt-2 flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-                            <span className="flex items-center gap-1">
-                              <Trophy className="w-4 h-4" />
-                              {quest.bounty} BOB
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <Clock className="w-4 h-4" />
-                              {new Date(quest.deadline).toLocaleDateString()}
+                          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                            {quest.description}
+                          </p>
+
+                          <div className="mt-2 flex items-center gap-2">
+                            <ArrowUpRight className="w-4 h-4 text-teal-500" />
+                            <span className="text-sm text-gray-600 dark:text-gray-400">
+                              Bounty: ${quest.bounty}
                             </span>
                           </div>
                         </div>
-                        <ArrowUpRight className="w-5 h-5 text-gray-400" />
                       </a>
                     ))
                   ) : (
                     <p className="text-gray-600 dark:text-gray-400">
-                      No quests created yet.
+                      No quests created.
+                    </p>
+                  )}
+                </div>
+              </motion.div>
+
+              {/* Display User's Given Quests */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+                className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl flex flex-col justify-between"
+              >
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+                  Given Quests
+                </h2>
+                <div className="space-y-4">
+                  {user.quest && user.quest.length > 0 ? (
+                    user.quest.map((quest, index) => (
+                      <div
+                        key={index}
+                        className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md"
+                      >
+                        <h3 className="font-semibold text-gray-900 dark:text-white">
+                          {quest.title}
+                        </h3>
+                        <p className="text-gray-600 dark:text-gray-400">
+                          {quest.description || "No description available."}
+                        </p>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-gray-600 dark:text-gray-400">
+                      No quests available.
                     </p>
                   )}
                 </div>
