@@ -119,7 +119,7 @@ app.post("/api/v1/upload", upload.single("file"), async (req, res) => {
 
 //quest routes
 app.post("/api/v1/quests/create", verifyToken, async (req, res) => {
-  let { title, description, questions, bounty, status, attempts } = req.body;
+  let { thumbnail,title, description, questions, bounty, status, attempts } = req.body;
   console.log(req.body);
 
   const createdBy = req.user.username;
@@ -128,6 +128,7 @@ app.post("/api/v1/quests/create", verifyToken, async (req, res) => {
     res.status(400).json({ message: "User not found" });
   }
   const quest = new questModel({
+    thumbnail,
     title,
     description,
     questions,
@@ -137,6 +138,7 @@ app.post("/api/v1/quests/create", verifyToken, async (req, res) => {
     attempts,
   });
   const createdQuest = await quest.save();
+  console.log("Created quest",createdQuest);
   await initializeQuestStats(createdQuest._id);
 
   res.status(200).json({ message: "Quest created successfully" });
