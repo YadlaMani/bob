@@ -11,6 +11,7 @@ import cors from "cors";
 import userModel from "./models/user.js";
 import questModel from "./models/quest.js";
 import questStatsModel from "./models/questStat.js";
+import { forumModel, commentModel } from "./models/forum.js";
 //middleware
 import verifyToken from "./middleware/verifyToken.js";
 //utilities
@@ -119,7 +120,8 @@ app.post("/api/v1/upload", upload.single("file"), async (req, res) => {
 
 //quest routes
 app.post("/api/v1/quests/create", verifyToken, async (req, res) => {
-  let { thumbnail,title, description, questions, bounty, status, attempts } = req.body;
+  let { thumbnail, title, description, questions, bounty, status, attempts } =
+    req.body;
   console.log(req.body);
 
   const createdBy = req.user.username;
@@ -138,7 +140,7 @@ app.post("/api/v1/quests/create", verifyToken, async (req, res) => {
     attempts,
   });
   const createdQuest = await quest.save();
-  console.log("Created quest",createdQuest);
+  console.log("Created quest", createdQuest);
   await initializeQuestStats(createdQuest._id);
 
   res.status(200).json({ message: "Quest created successfully" });
@@ -333,5 +335,37 @@ app.get("/api/v1/users/:id", async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+//forum routes
+app.get("/api/v1/forums", async (req, res) => {
+  try {
+    const forums = await forumModel.find({});
+    res.status(200).json(forums);
+  } catch (err) {
+    console.log(err);
+    res.status(404).json({ message: "Failed to fetch forums" });
+  }
+});
+app.post("/api/v1/forums", verifyToken, async (req, res) => {
+  try {
+    const { title, description, bounty } = req.body;
+    const username = req.user.username;
+    const user = await userModel.findOne({ username });
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+    }
+    const newForum = await forumModel.create({
+      userId: user._id,
+      title,
+      description,
+      bounty,
+    });
+    res.status(200).json({
+      message: "Forum created successfully",
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(404).json({ message: "Failed to create forum" });
   }
 });
