@@ -19,7 +19,7 @@ export default function QuestsPage() {
   const [quests, setQuests] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  
   async function fetchQuests() {
     try {
       setLoading(true);
@@ -112,11 +112,11 @@ function ErrorMessage({ message, onRetry }) {
 
 function QuestCard({ quest, onClick }) {
   const router = useRouter();
+  const [startLoading, setStartLoading] = useState(true);
   return (
     <Card
       className="overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer transform hover:scale-[1.02] hover:-translate-y-1"
-      onClick={onClick}
-    >
+      onClick={onClick}>
       <div className="relative h-48 overflow-hidden">
         <img
           src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.HxV79tFMPfBAIo0BBF-sOgHaEy%26pid%3DApi&f=1&ipt=a268266726f41f05a21e0625db3b5e8b0c5b11e7bf23e0bd23ddcc1bb2a259bb&ipo=images"
@@ -125,8 +125,7 @@ function QuestCard({ quest, onClick }) {
         />
         <Badge
           variant={quest.status === "open" ? "default" : "secondary"}
-          className="absolute top-4 right-4"
-        >
+          className="absolute top-4 right-4">
           {quest.status}
         </Badge>
       </div>
@@ -150,16 +149,22 @@ function QuestCard({ quest, onClick }) {
         </div>
       </CardFooter>
       <div className="px-6 pb-4">
-        <Button
-          className="w-full"
-          onClick={(e) => {
-            e.stopPropagation();
-
-            router.push(`/answer/${quest._id}`);
-          }}
-        >
-          Take Quest
-        </Button>
+        {startLoading ? (
+          <Button
+            className="w-full"
+            onClick={(e) => {
+              e.stopPropagation();
+              setStartLoading(true);
+              router.push(`/answer/${quest._id}`);
+              setStartLoading(false);
+            }}>
+            Take Quest
+          </Button>
+        ) : (
+          <Button className="w-full" disabled>
+            Loading...
+          </Button>
+        )}
       </div>
     </Card>
   );

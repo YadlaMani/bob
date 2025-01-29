@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
           <Toaster />
           <Navbar />
           <main className="flex-grow">{children}</main>
-        </AppWalletProvider>
+        </AppWalletProvider>   
       </body>
     </html>
   );

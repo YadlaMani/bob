@@ -40,6 +40,7 @@ export default function CreateQuestion() {
   const [attempts, setAttempts] = useState(0);
   const [error, setError] = useState("");
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isLoading,setLoading] = useState(true);
 
   useEffect(() => {
     if (!wallet.publicKey) {
@@ -98,6 +99,7 @@ export default function CreateQuestion() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(false);
 
     if (!title) {
       setError("Title is required");
@@ -152,6 +154,8 @@ export default function CreateQuestion() {
       console.error(error);
       setError("Something went wrong");
       toast.error("Failed to create quest");
+    }finally{
+      setLoading(true);
     }
   };
 
@@ -259,7 +263,17 @@ export default function CreateQuestion() {
             <Button variant="outline" onClick={() => router.push("/")}>
               Cancel
             </Button>
-            <Button type="submit">Create Quest</Button>
+            {
+              isLoading? (
+                <Button type="submit">Create Quest</Button>
+              ) : (
+                
+                <Button  disabled>
+                  Creating Quest...
+                </Button>
+              )
+            }
+           
           </div>
         </form>
       </CardContent>
