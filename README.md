@@ -6,23 +6,23 @@ DataQuest connects businesses, researchers, and content creators with a global c
 * [X] Data Labeling: Perfect for ML/AI dataset creation
 * [X] Content Rating: Ideal for thumbnail effectiveness testing
 * [X] Opinion Polls: Great for market research and sentiment analysis
-* Custom Formats: Design your own question formats
+* [X] Custom Formats: Design your own question formats
 #### Quest Management
 * [X] Set custom bounty amounts in Solana
-* Define quest duration and participant limits
+* [X] Define quest duration and participant limits
 * [X] Toggle between Open/Closed/Draft states
 * Add images, videos, or documents for labeling
 * Set qualification requirements for contributors
 ### Response Collection
 #### Real-time Statistics
 * [X] View response distributions
-* Track completion rates
+* [X] Track completion rates
 * [X] Monitor quality metrics
-* Analyze participant demographics
+* [X] Analyze participant demographics
 #### Data Export Options
-* Download responses in PDF format
+* [X] Download responses in PDF format
 * Export raw data in CSV/JSON
-* Generate visual reports
+* [X] Generate visual reports
 * Access response timestamps and metadata
 ### Payment System
 #### Solana Integration
@@ -33,19 +33,19 @@ DataQuest connects businesses, researchers, and content creators with a global c
 #### Reward Management
 * [X] Set per-response bounties
 * Implement bonus structures
-* Define quality-based rewards
-* Track payment history
+* [X] Define quality-based rewards
+* [X] Track payment history
 ### User Experience
 #### For Quest Creators
-* Intuitive quest builder interface
-* Real-time preview of quest layout
+* [X] Intuitive quest builder interface
+* [X] Real-time preview of quest layout
 * Template library for quick starts
 * Advanced filtering and sorting of responses
 * Collaboration tools for team projects
 #### For Contributors
 * Clean, mobile-friendly interface
-* Quest discovery feed
-* Earnings dashboard
+* [X] Quest discovery feed
+* [X] Earnings dashboard
 * Performance statistics
 * Qualification tracking
 ## 💻 Technical Stack
