@@ -28,29 +28,28 @@ const Navbar = () => {
 
   function callLogout() {
     localStorage.removeItem("token");
+    window.location.reload();
     router.push("/");
   }
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 mt-5 rounded-lg px-4 py-2 flex items-center justify-between w-full max-w-4xl mx-auto shadow-md transition-colors duration-300
+      className={`fixed top-0 left-0 right-0 z-50 mt-5 rounded-lg px-4 py-2 flex  items-center justify-between w-full max-w-4xl mx-auto shadow-md transition-colors duration-300
       ${isDarkMode ? "bg-gray-900 text-white" : "bg-white text-black"} border 
       ${isDarkMode ? "border-gray-700" : "border-gray-300"}`}
     >
-     
-
       {/* Navigation items container */}
       <div className="flex items-center space-x-4 ml-auto flex-grow justify-between">
-      <Link href="/" className="flex items-center space-x-2 mr-4">
-        <img
-          alt="Logo"
-          className="rounded-full"
-          height="32"
-          src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.ULC-eiskdEGCiSg4KQab9gHaFj%26pid%3DApi&f=1&ipt=2836803f2e42526fcdccac3a26d8c7c43bfa8d038d9e6e67ea1f68b247e5030a&ipo=images"
-          width="32"
-        />
-        <span className="font-semibold text-xl">Bob</span>
-      </Link>
+        <Link href="/" className="flex items-center space-x-2 mr-4">
+          <img
+            alt="Logo"
+            className="rounded-full"
+            height="32"
+            src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.ULC-eiskdEGCiSg4KQab9gHaFj%26pid%3DApi&f=1&ipt=2836803f2e42526fcdccac3a26d8c7c43bfa8d038d9e6e67ea1f68b247e5030a&ipo=images"
+            width="32"
+          />
+          <span className="font-semibold text-xl">Bob</span>
+        </Link>
         <Button variant="ghost" asChild className="text-base font-medium">
           <Link href="/quests">Quest</Link>
         </Button>
