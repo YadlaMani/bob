@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const [token, setToken] = useState(null);
   const router = useRouter();
 
@@ -24,6 +24,7 @@ const Navbar = () => {
     if (localStorage.getItem("token")) {
       setToken(localStorage.getItem("token"));
     }
+    document.documentElement.classList.add("dark");
   }, []);
 
   function callLogout() {
