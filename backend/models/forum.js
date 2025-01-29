@@ -7,6 +7,7 @@ const CommentSchema = new mongoose.Schema({
   upvotes: { type: Number, default: 0 },
   downvotes: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
+  recievedBounty: { type: Number, default: 0 },
 });
 
 const ForumSchema = new mongoose.Schema({

@@ -121,7 +121,16 @@ app.post("/api/v1/upload", upload.single("file"), async (req, res) => {
 
 //quest routes
 app.post("/api/v1/quests/create", verifyToken, async (req, res) => {
-  let { thumbnail,title, description, questions, bounty, status, attempts,selectedTags } = req.body;
+  let {
+    thumbnail,
+    title,
+    description,
+    questions,
+    bounty,
+    status,
+    attempts,
+    selectedTags,
+  } = req.body;
   console.log(req.body);
 
   const createdBy = req.user.username;
@@ -138,7 +147,7 @@ app.post("/api/v1/quests/create", verifyToken, async (req, res) => {
     createdBy: user,
     status,
     attempts,
-    tags:selectedTags
+    tags: selectedTags,
   });
   const createdQuest = await quest.save();
   console.log("Created quest", createdQuest);
@@ -418,3 +427,67 @@ app.post("/api/v1/forums/:id/comments", verifyToken, async (req, res) => {
     res.status(500).json({ message: "Failed to add comment" });
   }
 });
+app.post(
+  "/api/v1/forums/:id/comments/:commentId/gift",
+  verifyToken,
+  async (req, res) => {
+    try {
+      const id = req.params.id;
+      const commentId = req.params.commentId;
+      const { amount } = req.body;
+
+      // Validate the amount
+      if (!amount || isNaN(amount) || amount <= 0) {
+        return res.status(400).json({ message: "Invalid amount" });
+      }
+
+      // Retrieve forum and comment
+      const forum = await forumModel.findById(id);
+      const comment = await commentModel.findById(commentId);
+
+      if (!forum || !comment) {
+        return res.status(404).json({ message: "Forum or comment not found" });
+      }
+
+      // Check if the forum has enough bounty
+      if (forum.bounty < amount) {
+        return res
+          .status(400)
+          .json({ message: "Insufficient bounty in forum" });
+      }
+
+      // Retrieve user and update records
+      const user = await userModel.findById(comment.userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      forum.bounty -= amount;
+      comment.bounty += amount;
+      user.earnings += amount;
+
+      // Use a transaction to ensure atomicity
+      const session = await mongoose.startSession();
+      session.startTransaction();
+      try {
+        await user.save({ session });
+        await forum.save({ session });
+        await comment.save({ session });
+        await session.commitTransaction();
+
+        res.status(200).json({ message: "Comment gifted successfully" });
+      } catch (error) {
+        await session.abortTransaction();
+        res
+          .status(500)
+          .json({ message: "Failed to gift comment", error: error.message });
+      } finally {
+        session.endSession();
+      }
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: "An error occurred", error: err.message });
+    }
+  }
+);
