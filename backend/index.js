@@ -227,7 +227,7 @@ app.get("/api/v1/questStats/:questId", verifyToken, async (req, res) => {
 //user routes
 app.get("/api/v1/user", verifyToken, async (req, res) => {
   const username = req.user.username;
-  const users = await userModel.find({ username });
+  const users = await userModel.find({ username }).populate("quest");
   res.status(200).json(users);
 });
 app.get("/api/v1/user/quests", verifyToken, async (req, res) => {
@@ -282,5 +282,42 @@ app.post("/api/v1/user/onboarding", async (req, res) => {
     res.status(200).json({ message: "Onboarding successful" });
   } catch (err) {
     console.log(err.message);
+  }
+});
+app.get("/api/v1/users", async (req, res) => {
+  try {
+    const users = await userModel
+      .find({}, "username earnings quest earningsHistory")
+      .sort({ earnings: -1 });
+
+    const formattedUsers = users.map((user) => ({
+      username: user.username,
+      earnings: user.earnings,
+      questCount: user.earningsHistory.length,
+      userId: user._id,
+    }));
+
+    res.status(200).json({ users: formattedUsers });
+  } catch (err) {
+    res.status(500).json({
+      message: "Failed to fetch users",
+    });
+  }
+});
+app.get("/api/v1/users/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const user = await userModel
+      .findById(id)
+      .select("username earnings earningsHistory quest country tags")
+      .populate("quest");
+
+    if (user) {
+      res.status(200).json(user);
+    } else {
+      res.status(404).json({ message: "Couldn't find user" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 });
