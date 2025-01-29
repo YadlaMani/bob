@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { LAMPORTS_PER_SOL, SystemProgram, Transaction } from "@solana/web3.js";
-
+import Link from "next/link";
 export default function ForumsPage() {
   const [user, setUser] = useState(null);
   const [forums, setForums] = useState([]);
@@ -168,18 +168,20 @@ export default function ForumsPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {forums.length > 0 ? (
           forums.map((forum) => (
-            <Card key={forum._id}>
-              <CardHeader>
-                <CardTitle>{forum.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">{forum.description}</p>
-                <div className="flex justify-between items-center text-sm text-gray-500">
-                  <span>Bounty: ${forum.bounty}</span>
-                  <span>Comments: {forum.comments?.length || 0}</span>
-                </div>
-              </CardContent>
-            </Card>
+            <Link href={`/forum/${forum._id}`} key={forum._id}>
+              <Card key={forum._id}>
+                <CardHeader>
+                  <CardTitle>{forum.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600 mb-4">{forum.description}</p>
+                  <div className="flex justify-between items-center text-sm text-gray-500">
+                    <span>Bounty: ${forum.bounty}</span>
+                    <span>Comments: {forum.comments?.length || 0}</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           ))
         ) : (
           <p className="text-gray-500 col-span-full text-center">

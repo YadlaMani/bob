@@ -95,6 +95,12 @@ const Navbar = () => {
               >
                 Leaderboard
               </Link>
+              <Link
+                href="/forum"
+                className="text-base font-medium hover:text-gray-300"
+              >
+                Forum
+              </Link>
             </div>
           </div>
 
@@ -149,6 +155,9 @@ const Navbar = () => {
         </Link>
         <Link href="/leaderboard" className="text-base font-medium">
           Leaderboard
+        </Link>
+        <Link href="/forum" className="text-base font-medium">
+          Forum
         </Link>
         {token ? (
           <Button variant="destructive" onClick={callLogout}>
