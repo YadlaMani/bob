@@ -51,6 +51,7 @@ const Login = () => {
       setError(
         err?.response?.data?.message || err.message || "Something went wrong"
       );
+      toast.error("Invalid creditionals");
     } finally {
       setLoading(true);
     }
