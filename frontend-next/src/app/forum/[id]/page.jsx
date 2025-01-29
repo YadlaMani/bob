@@ -6,16 +6,13 @@ import axios from "axios";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 
 export default function ForumPage() {
@@ -23,7 +20,10 @@ export default function ForumPage() {
   const [forum, setForum] = useState(null);
   const [newComment, setNewComment] = useState("");
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
+  const [isGiftModalOpen, setIsGiftModalOpen] = useState(false);
+  const [selectedCommentId, setSelectedCommentId] = useState(null);
   const [currUser, setCurrUser] = useState(null);
+  const [giftAmount, setGiftAmount] = useState(0); // Store the gift amount
 
   useEffect(() => {
     fetchForum();
@@ -52,7 +52,6 @@ export default function ForumPage() {
           },
         }
       );
-      console.log(response.data[0]);
       setCurrUser(response.data[0]);
     } catch (error) {
       console.log(error);
@@ -75,6 +74,29 @@ export default function ForumPage() {
     } catch (error) {
       console.error(error);
       toast.error("Failed to add comment");
+    }
+  }
+
+  function openGiftModal(commentId) {
+    setSelectedCommentId(commentId);
+    setIsGiftModalOpen(true);
+  }
+
+  async function handleGiftSol() {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/forums/${id}/comments/${selectedCommentId}/gift`,
+        { amount: giftAmount },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+      toast.success(response.data.message);
+      setIsGiftModalOpen(false);
+      fetchForum();
+    } catch (err) {
+      console.log(err);
+      toast.error("Failed to gift SOL");
     }
   }
 
@@ -125,12 +147,16 @@ export default function ForumPage() {
                     👎 {comment.downvotes}
                   </Button>
                 </div>
-                {/* Ensure currUser is not null before accessing its properties */}
                 {currUser &&
                   comment.userId !== forum.userId &&
                   forum.userId === currUser._id && (
                     <div className="flex items-center space-x-2 mt-2">
-                      <Button size="sm">Gift Sol</Button>
+                      <Button
+                        size="sm"
+                        onClick={() => openGiftModal(comment._id)}
+                      >
+                        Gift Sol
+                      </Button>
                     </div>
                   )}
               </div>
@@ -153,6 +179,31 @@ export default function ForumPage() {
             className="min-h-[100px]"
           />
           <Button onClick={addComment}>Submit Comment</Button>
+        </DialogContent>
+      </Dialog>
+
+      {/* Gift Sol Modal */}
+      <Dialog open={isGiftModalOpen} onOpenChange={setIsGiftModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Gift Sol to Comment</DialogTitle>
+          </DialogHeader>
+          <p>How much Sol would you like to gift to this comment?</p>
+          <input
+            type="number"
+            value={giftAmount}
+            onChange={(e) => setGiftAmount(parseFloat(e.target.value))}
+            min="0"
+            max={forum.bounty}
+            className="border p-2 rounded w-full mb-4 dark:text-black"
+            placeholder={`Max: ${forum.bounty}`}
+          />
+          <div className="flex space-x-2">
+            <Button onClick={handleGiftSol}>Confirm Gift</Button>
+            <Button variant="outline" onClick={() => setIsGiftModalOpen(false)}>
+              Cancel
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
