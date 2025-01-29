@@ -199,7 +199,7 @@ const HomePage = () => {
             participate in quests and earn crypto rewards.
           </p>
         </div>
-        <div className="flex-1">
+        <div className="flex-1"> 
           <CodeBlock
             language="jsx"
             filename="Quest Creator.jsx"
@@ -210,6 +210,9 @@ const HomePage = () => {
       </div>
 
       <div className="py-16">
+      <h2 className="text-5xl font-extrabold text-center text-black dark:text-white mb-8">
+    Why<span className="dark:text-primary"> Bob</span>
+  </h2>
         <BentoGrid className="max-w-4xl mx-auto md:auto-rows-[20rem]">
           {bentoItems.map((item, i) => (
             <BentoGridItem
