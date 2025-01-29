@@ -39,13 +39,7 @@ const QuestSchema = new Schema({
       "Adventure", "Camping", "Hiking", "Extreme_Sports", "Cooking",
       "Dancing", "Stand_Up_Comedy", "Astrology", "Mythology", "Volunteering"
   ],
-  validate: {
-    validator: function (tags) {
-      return tags.length >= 2&&tags.length <=6;
-    },
-    message: "At least 2 tags are required.",
-  },
-  }
+  
 });
 const questModel = mongoose.model("Quest", QuestSchema);
 export default questModel;
