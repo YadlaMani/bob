@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Carousel } from "@/components/ui/Carousel";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import Link from "next/link";
 
 const Login = () => {
   const [emailOrUsername, setEmailOrUsername] = useState("");
@@ -13,7 +14,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const [type, setType] = useState("email");
   const router = useRouter();
-  const [loading,setLoading]=useState(true);
+  const [loading, setLoading] = useState(true);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,14 +47,12 @@ const Login = () => {
       localStorage.setItem("token", token);
       router.push("/");
       toast.success("Logged in successfully");
-      
     } catch (err) {
       setError(
         err?.response?.data?.message || err.message || "Something went wrong"
       );
-    }finally{
+    } finally {
       setLoading(true);
-      
     }
   };
 
@@ -66,9 +65,11 @@ const Login = () => {
       <div className="w-full lg:w-1/2 bg-[#1A1F2C] p-8 lg:p-20 flex flex-col justify-center">
         <div className="max-w-md w-full mx-auto">
           <div className="flex justify-between items-center mb-12">
-            <button className="text-white/80 hover:text-white px-4 py-2 rounded-full bg-white/10">
-              Back to website
-            </button>
+            <Link href="/">
+              <button className="text-white/80 hover:text-white px-4 py-2 rounded-full bg-white/10">
+                Back to website
+              </button>
+            </Link>
           </div>
 
           <h1 className="text-4xl font-semibold text-white mb-4">
@@ -126,19 +127,22 @@ const Login = () => {
                 </select>
               </div>
             </div>
-          {loading?<button
-              type="submit"
-              className="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-md transition-colors"
-            >
-              Login
-            </button>:<button
-              type="submit"
-              className="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-md transition-colors"
-              disabled
-            >
-              Loading...
-            </button>}
-            
+            {loading ? (
+              <button
+                type="submit"
+                className="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-md transition-colors"
+              >
+                Login
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-md transition-colors"
+                disabled
+              >
+                Loading...
+              </button>
+            )}
           </form>
         </div>
       </div>

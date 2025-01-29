@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Carousel } from "@/components/ui/Carousel";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -58,11 +59,12 @@ const Register = () => {
       <div className="w-full lg:w-1/2 bg-[#1A1F2C] p-8 lg:p-20 flex flex-col justify-center">
         <div className="max-w-md w-full mx-auto">
           <div className="flex justify-between items-center mb-12">
-            <a
+            <Link
               href="/"
-              className="text-white/80 hover:text-white px-4 py-2 rounded-full bg-white/10">
+              className="text-white/80 hover:text-white px-4 py-2 rounded-full bg-white/10"
+            >
               Back to website
-            </a>
+            </Link>
           </div>
 
           <h1 className="text-4xl font-semibold text-white mb-4">
@@ -122,14 +124,16 @@ const Register = () => {
             {loading ? (
               <button
                 type="submit"
-                className="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-md transition-colors">
+                className="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-md transition-colors"
+              >
                 Create account
               </button>
             ) : (
               <button
                 type="submit"
                 className="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-md transition-colors"
-                disabled>
+                disabled
+              >
                 Loading...
               </button>
             )}
