@@ -23,6 +23,8 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
+import { areas } from "@/consts/tags";
+import { Badge, X } from "lucide-react";
 
 export default function CreateQuestion() {
   const wallet = useWallet();
@@ -43,7 +45,13 @@ export default function CreateQuestion() {
   const [isLoading, setLoading] = useState(true);
   const [thumbnail, setThumbnail] = useState(null);
   const [editingIndex, setEditingIndex] = useState(null);
+  const [selectedTags, setSelectedTags] = useState([]);
 
+  if(!localStorage.getItem("token")){
+    toast.error("You must login first");
+    router.push("/login");
+    return null;
+  }
 
   useEffect(() => {
     if (!wallet.publicKey) {
@@ -126,6 +134,7 @@ export default function CreateQuestion() {
       status,
       questions,
       attempts,
+      selectedTags
     };
 
     try {
@@ -201,6 +210,19 @@ export default function CreateQuestion() {
 
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
+  const handleRemoveTag = (tagToRemove) => {
+    setSelectedTags(selectedTags.filter((tag) => tag !== tagToRemove));
+  };
+  const handleAddTag = (area) => {
+    if (selectedTags.length >= 6) {
+      toast.error("You cannot select more than 6 interests.");
+      return;
+    }
+    if (!selectedTags.includes(area)) {
+      setSelectedTags([...selectedTags, area]);
+    }
+  };
+  console.log(selectedTags);
 
   return (
     <Card className="w-[800px] mx-auto my-6 p-4 bg-background">
@@ -300,6 +322,37 @@ export default function CreateQuestion() {
               onChange={(e) => setAttempts(e.target.value)}
               placeholder="Max number of attempts"
             />
+          </div>
+          <div>
+            {/* Interest Selection */}
+            <div className="space-y-2">
+                <label htmlFor="areas">Select Domains (Max 6)</label>
+                <Select onValueChange={handleAddTag}>
+                  <SelectTrigger id="areas">
+                    <SelectValue placeholder="Choose an interest" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {areas.map((area) => (
+                      <SelectItem key={area} value={area}>
+                        {area}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <div className="space-x-2">
+                {selectedTags.map((tag) => (
+                    <span key={tag} variant="secondary" className="text-sm py-1 px-2 w-[fit-content] bg-gray-700 rounded-lg ">
+                      {tag}
+                      <button type="button" onClick={() => handleRemoveTag(tag)} className="ml-1 text-gray-500 hover:text-gray-700">
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+
+                
+              </div>
+
           </div>
 
           <Select

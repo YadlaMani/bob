@@ -9,34 +9,27 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import { countries } from "@/consts/countries";
+import { areas } from "@/consts/tags";
 import axios from "axios";
 import { toast } from "sonner";
-
 import { useRouter } from "next/navigation";
 import Loading from "../loading";
+
 const OnboardingPage = () => {
   const [joinAs, setJoinAs] = useState("both");
-  const [tags, setTags] = useState([]);
-  const [currentTag, setCurrentTag] = useState("");
+  const [selectedTags, setSelectedTags] = useState([]);
   const [ageGroup, setAgeGroup] = useState("");
   const [country, setCountry] = useState("");
   const [user, setUser] = useState(null);
-  const [isLoading,setIsLoading]=useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-  async function functionfetchUserDetails() {
+
+  async function fetchUserDetails() {
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/user`,
       {
@@ -45,20 +38,21 @@ const OnboardingPage = () => {
         },
       }
     );
-    console.log(response);
     setUser(response.data);
   }
 
-  const handleAddTag = (e) => {
-    if (e.key === "Enter" && currentTag.trim() !== "") {
-      e.preventDefault();
-      setTags([...tags, currentTag.trim()]);
-      setCurrentTag("");
+  const handleAddTag = (area) => {
+    if (selectedTags.length >= 6) {
+      toast.error("You cannot select more than 6 interests.");
+      return;
+    }
+    if (!selectedTags.includes(area)) {
+      setSelectedTags([...selectedTags, area]);
     }
   };
 
   const handleRemoveTag = (tagToRemove) => {
-    setTags(tags.filter((tag) => tag !== tagToRemove));
+    setSelectedTags(selectedTags.filter((tag) => tag !== tagToRemove));
   };
 
   const handleSubmit = async (e) => {
@@ -67,7 +61,7 @@ const OnboardingPage = () => {
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/user/onboarding`,
-        { username: user[0].username, joinAs, tags, ageGroup, country },
+        { username: user[0].username, joinAs, tags: selectedTags, ageGroup, country },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -78,13 +72,15 @@ const OnboardingPage = () => {
       toast.success(response.data.message);
     } catch (err) {
       toast.error(err);
-    }finally{
+    } finally {
       setIsLoading(true);
     }
   };
+
   useEffect(() => {
-    functionfetchUserDetails();
+    fetchUserDetails();
   }, []);
+
   return (
     <div className="container mx-auto p-6 max-w-2xl mt-16">
       {user ? (
@@ -100,54 +96,55 @@ const OnboardingPage = () => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <Label>I want to join as:</Label>
+                <label>I want to join as:</label>
                 <RadioGroup defaultValue="both" onValueChange={setJoinAs}>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="contributor" id="contributor" />
-                    <Label htmlFor="contributor">Contributor</Label>
+                    <label htmlFor="contributor">Contributor</label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="organization" id="organization" />
-                    <Label htmlFor="organization">Organization</Label>
+                    <label htmlFor="organization">Organization</label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="both" id="both" />
-                    <Label htmlFor="both">Both</Label>
+                    <label htmlFor="both">Both</label>
                   </div>
                 </RadioGroup>
               </div>
 
+              {/* Interest Selection */}
               <div className="space-y-2">
-                <Label htmlFor="tags">Interests (Press Enter to add)</Label>
-                <div className="flex flex-wrap gap-2 mb-2">
-                  {tags.map((tag) => (
-                    <Badge
-                      key={tag}
-                      variant="secondary"
-                      className="text-sm py-1 px-2"
-                    >
+                <label htmlFor="areas">Select Interests (Max 6)</label>
+                <Select onValueChange={handleAddTag}>
+                  <SelectTrigger id="areas">
+                    <SelectValue placeholder="Choose an interest" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {areas.map((area) => (
+                      <SelectItem key={area} value={area}>
+                        {area}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                {/* Selected Interests Display */}
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {selectedTags.map((tag) => (
+                    <Badge key={tag} variant="secondary" className="text-sm py-1 px-2">
                       {tag}
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveTag(tag)}
-                        className="ml-1 text-gray-500 hover:text-gray-700"
-                      >
+                      <button type="button" onClick={() => handleRemoveTag(tag)} className="ml-1 text-gray-500 hover:text-gray-700">
                         <X className="h-3 w-3" />
                       </button>
                     </Badge>
                   ))}
                 </div>
-                <Input
-                  id="tags"
-                  value={currentTag}
-                  onChange={(e) => setCurrentTag(e.target.value)}
-                  onKeyDown={handleAddTag}
-                  placeholder="Add your interests..."
-                />
               </div>
 
+              {/* Age Group */}
               <div className="space-y-2">
-                <Label htmlFor="age-group">Age Group (Optional)</Label>
+                <label htmlFor="age-group">Age Group (Optional)</label>
                 <Select onValueChange={setAgeGroup}>
                   <SelectTrigger id="age-group">
                     <SelectValue placeholder="Select your age group" />
@@ -162,8 +159,9 @@ const OnboardingPage = () => {
                 </Select>
               </div>
 
+              {/* Country Selection */}
               <div className="space-y-2">
-                <Label htmlFor="country">Country</Label>
+                <label htmlFor="country">Country</label>
                 <Select onValueChange={setCountry} required>
                   <SelectTrigger id="country">
                     <SelectValue placeholder="Select your country" />
@@ -177,17 +175,22 @@ const OnboardingPage = () => {
                   </SelectContent>
                 </Select>
               </div>
-              {isLoading?<Button type="submit" className="w-full">
-                Complete Onboarding
-              </Button>:<Button type="submit" className="w-full" disabled>
-                Loading...
-              </Button>}
-              
+
+              {/* Submit Button */}
+              {isLoading ? (
+                <Button type="submit" className="w-full">
+                  Complete Onboarding
+                </Button>
+              ) : (
+                <Button type="submit" className="w-full" disabled>
+                  Loading...
+                </Button>
+              )}
             </form>
           </CardContent>
         </Card>
       ) : (
-        <Loading/>
+        <Loading />
       )}
     </div>
   );
