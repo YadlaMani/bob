@@ -47,6 +47,11 @@ export default function CreateQuestion() {
   const [editingIndex, setEditingIndex] = useState(null);
   const [selectedTags, setSelectedTags] = useState([]);
 
+  if(!localStorage.getItem("token")){
+    toast.error("You must login first");
+    router.push("/login");
+    return null;
+  }
 
   useEffect(() => {
     if (!wallet.publicKey) {
