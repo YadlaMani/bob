@@ -25,7 +25,7 @@ const QuestSchema = new Schema({
   },
   tags:{
     type: [String],
-    required: true,
+   
 
     enum: [
       "Technology", "Science", "Health", "Fitness", "Travel",
