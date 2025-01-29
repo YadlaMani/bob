@@ -112,9 +112,7 @@ const Profile = () => {
   };
 
   if (loading) {
-    return (
-      <Loading/>
-    );
+    return <Loading />;
   }
 
   return (
@@ -252,7 +250,7 @@ const Profile = () => {
                   {quests.length > 0 ? (
                     quests.map((quest) => (
                       <a
-                        href={`/questStats/${quest._id}`}
+                        href={`/stats/${quest._id}`}
                         key={quest._id}
                         className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition cursor-pointer"
                       >
