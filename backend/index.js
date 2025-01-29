@@ -158,6 +158,18 @@ app.get("/api/v1/quests/:id", async (req, res) => {
     res.status(404).json({ message: "Quest not found" });
   }
 });
+app.post("/api/v1/quest/addBounty/:id", verifyToken, async (req, res) => {
+  const questId = req.params.id;
+  console.log(req.body);
+  const newBounty = req.body.newBounty;
+  const quest = await questModel.findById(questId);
+  if (!quest) {
+    res.status(404).json({ message: "Quest not found" });
+  }
+  quest.bounty += Number.parseFloat(newBounty);
+  await quest.save();
+  res.status(200).json({ message: "Bounty added successfully" });
+});
 //questStats
 app.post(
   "/api/v1/questStats/:questId/answers",
