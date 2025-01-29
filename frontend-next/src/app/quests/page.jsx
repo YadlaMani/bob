@@ -211,7 +211,11 @@ function QuestCard({ quest, onClick }) {
     >
       <div className="relative h-48 overflow-hidden">
         <img
-          src={quest.thumbnail}
+          src={
+            quest.thumbnail
+              ? quest.thumbnail
+              : "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.V5zfZZhnF2epZ7FnbejUxwHaEo%26pid%3DApi&f=1&ipt=fc04d043469e13d2f7d0d6485b5cf9ebaf9769301e67a16f76b8f7ad71000f7e&ipo=images"
+          }
           alt={quest.title}
           className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
         />
