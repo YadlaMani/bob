@@ -52,46 +52,36 @@ const HomePage = () => {
 
   const testimonials = [
     {
-      quote:
-        "It was the best of times, it was the worst of times, it was the age of wisdom...",
-      name: "Charles Dickens",
-      title: "A Tale of Two Cities",
+      imageUrl: "/test1.png", 
+      altText: "Charles Dickens",
     },
     {
-      quote:
-        "To be, or not to be, that is the question: Whether 'tis nobler in the mind...",
-      name: "William Shakespeare",
-      title: "Hamlet",
+      imageUrl: "/test2.png", 
+      altText: "William Shakespeare",
     },
     {
-      quote: "All that we see or seem is but a dream within a dream.",
-      name: "Edgar Allan Poe",
-      title: "A Dream Within a Dream",
+      imageUrl: "/test3.png", 
+      altText: "Edgar Allan Poe",
     },
     {
-      quote:
-        "It is a truth universally acknowledged, that a single man in possession...",
-      name: "Jane Austen",
-      title: "Pride and Prejudice",
+      imageUrl: "/test4.png", 
+      altText: "Jane Austen",
     },
     {
-      quote:
-        "Call me Ishmael. Some years ago—never mind how long precisely—having little...",
-      name: "Herman Melville",
-      title: "Moby-Dick",
+      imageUrl: "/test5.png", 
+      altText: "Herman Melville",
     },
   ];
-
+  
   const Skeleton = () => (
     <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-neutral-100 dark:bg-black border border-transparent"></div>
   );
-  
 
   const bentoItems = [
     {
       title: "Solana-Powered Payments",
       description:
-        "Instant, low-cost cross-border payouts with secure Solana transactions.",
+        "Instant, low-cost cross-border payouts with secure Solana transactions.",
       header: <Skeleton />,
       className: "md:col-span-2",
       icon: <IconClipboardCopy className="h-4 w-4 text-neutral-500" />,
@@ -118,7 +108,7 @@ const HomePage = () => {
     {
       title: "Cross-Border Payments",
       description:
-        "Fast, low-cost Solana transactions for seamless global contributor payouts",
+        "Fast, low-cost Solana transactions for seamless global contributor payouts",
       header: <Skeleton />,
       className: "md:col-span-2",
       icon: <IconTableColumn className="h-4 w-4 text-neutral-500" />,
@@ -155,6 +145,7 @@ const HomePage = () => {
           >
             Crowdsourced Intelligence, Blockchain-Powered Rewards
           </motion.p>
+
         </div>
       </div>
 
@@ -177,11 +168,11 @@ const HomePage = () => {
             transition={{ delay: 0.5, duration: 1 }}
           >
             <Image
-              src="/1.png"
+              src="/dash.png"
               alt="hero"
               width={1000}
-              height={600}
-              className="rounded-lg"
+              height={1000}
+              className="rounded-lg object-cover"
             />
           </motion.div>
         </ContainerScroll>
@@ -200,7 +191,7 @@ const HomePage = () => {
             participate in quests and earn crypto rewards.
           </p>
         </div>
-        <div className="flex-1"> 
+        <div className="flex-1">
           <CodeBlock
             language="jsx"
             filename="Quest Creator.jsx"
@@ -211,9 +202,9 @@ const HomePage = () => {
       </div>
 
       <div className="py-16">
-      <h2 className="text-5xl font-extrabold text-center text-black dark:text-white mb-8">
-    Why<span className="dark:text-primary"> Bob</span>
-  </h2>
+        <h2 className="text-5xl font-extrabold text-center text-black dark:text-white mb-8">
+          Why<span className="dark:text-primary"> Bob</span>
+        </h2>
         <BentoGrid className="max-w-4xl mx-auto md:auto-rows-[20rem]">
           {bentoItems.map((item, i) => (
             <BentoGridItem
