@@ -300,29 +300,43 @@ const QuestStatsPage = () => {
                   Question {index + 1}: {quest.questions[index].text}
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {question.optionStats.map((option, optionIndex) => (
-                    <div key={optionIndex} className="flex flex-col">
-                      <span className="text-sm mb-1">
-                        {quest.questions[index].options[optionIndex]}
-                      </span>
-                      <div className="flex items-center gap-2">
-                        <Progress
-                          value={
-                            (option.selectedCount / stats.answeredCount) * 100
-                          }
-                          className="flex-grow"
-                        />
-                        <span className="text-sm font-medium w-12 text-right">
-                          {(
-                            (option.selectedCount / stats.answeredCount) *
-                            100
-                          ).toFixed(1)}
-                          %
-                        </span>
+                  {question.optionStats.map((option, optionIndex) => {
+                    const optionText =
+                      quest.questions[index].options[optionIndex];
+                    const isImage = optionText.startsWith("https");
+
+                    return (
+                      <div key={optionIndex} className="flex flex-col">
+                        {isImage ? (
+                          <img
+                            src={optionText}
+                            alt={`Option ${optionIndex}`}
+                            className="w-20 h-20 object-cover mb-1 rounded"
+                          />
+                        ) : (
+                          <span className="text-sm mb-1">{optionText}</span>
+                        )}
+
+                        <div className="flex items-center gap-2">
+                          <Progress
+                            value={
+                              (option.selectedCount / stats.answeredCount) * 100
+                            }
+                            className="flex-grow"
+                          />
+                          <span className="text-sm font-medium w-12 text-right">
+                            {(
+                              (option.selectedCount / stats.answeredCount) *
+                              100
+                            ).toFixed(1)}
+                            %
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
+
                 <div className="mt-2 text-sm text-muted-foreground">
                   Total responses: {stats.answeredCount}
                 </div>
