@@ -131,16 +131,15 @@ const HomePage = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
           >
-            Bob-Decentralized Data Labeling Platform
+          <span className="dark:text-primary">Bob</span>-Decentralized
           </motion.h1>
           <motion.p
-            className="mt-4 text-lg text-gray-600 dark:text-gray-400"
+            className="mt-4 text-3xl text-gray-600 dark:text-gray-400"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 1 }}
           >
-            Link businesses, researchers, and creators with global contributors
-            for quality data labels and crypto rewards.
+           Crowdsourced Intelligence, Blockchain-Powered Rewards
           </motion.p>
         </div>
       </div>

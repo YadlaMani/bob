@@ -33,11 +33,15 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 mt-5 rounded-lg px-4 py-2 flex items-center justify-between w-full max-w-3xl mx-auto shadow-md transition-colors duration-300
+      className={`fixed top-0 left-0 right-0 z-50 mt-5 rounded-lg px-4 py-2 flex items-center justify-between w-full max-w-4xl mx-auto shadow-md transition-colors duration-300
       ${isDarkMode ? "bg-gray-900 text-white" : "bg-white text-black"} border 
       ${isDarkMode ? "border-gray-700" : "border-gray-300"}`}
     >
-      <Link href="/" className="flex items-center space-x-2">
+     
+
+      {/* Navigation items container */}
+      <div className="flex items-center space-x-4 ml-auto flex-grow justify-between">
+      <Link href="/" className="flex items-center space-x-2 mr-4">
         <img
           alt="Logo"
           className="rounded-full"
@@ -47,7 +51,6 @@ const Navbar = () => {
         />
         <span className="font-semibold text-xl">Bob</span>
       </Link>
-      <div className="flex items-center space-x-4">
         <Button variant="ghost" asChild className="text-base font-medium">
           <Link href="/quests">Quest</Link>
         </Button>
