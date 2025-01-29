@@ -20,6 +20,7 @@ import updateQuestStats from "./utils/updateQuestStats.js";
 import multer from "multer";
 import uploadToS3 from "./utils/AWSUpload.js";
 import sendBalanceToUser from "./utils/sendBalanceToUser.js";
+import { AddressLookupTableProgram } from "@solana/web3.js";
 
 const upload = multer({ storage: multer.memoryStorage() });
 //general setup
@@ -367,5 +368,53 @@ app.post("/api/v1/forums", verifyToken, async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(404).json({ message: "Failed to create forum" });
+  }
+});
+app.get("/api/v1/forums/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const forum = await forumModel.findById(id);
+    if (forum) {
+      res.status(200).json(forum);
+    } else {
+      res.status(404).json({ message: "Couldn't find forum" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+app.post("/api/v1/forums/:id/comments", verifyToken, async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { content } = req.body;
+    const username = req.user.username;
+    const user = await userModel.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (!content) {
+      return res.status(400).json({ message: "Content are required" });
+    }
+
+    const forum = await forumModel.findById(id);
+    if (!forum) {
+      return res.status(404).json({ message: "Forum not found" });
+    }
+
+    // Create a new comment
+    const comment = await commentModel.create({
+      userId: user._id,
+      content,
+      username: user.username,
+    });
+
+    forum.comments.push(comment);
+    await forum.save();
+
+    res.status(200).json({ message: "Comment added successfully", comment });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Failed to add comment" });
   }
 });
