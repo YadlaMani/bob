@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
+import { LAMPORTS_PER_SOL, SystemProgram, Transaction } from "@solana/web3.js";
 import axios from "axios";
 import { toast } from "sonner";
 import {
@@ -32,7 +33,17 @@ import {
 } from "@/components/ui/select";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-
+import {
+  DialogClose,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 const QuestStatsPage = () => {
   const [stats, setStats] = useState(null);
   const [quest, setQuest] = useState(null);
@@ -40,6 +51,10 @@ const QuestStatsPage = () => {
   const [filter, setFilter] = useState("all");
   const params = useParams();
   const questId = params.id;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newBounty, setNewBounty] = useState("");
+  const wallet = useWallet();
+  const { connection } = useConnection();
 
   async function getStats() {
     try {
@@ -67,6 +82,34 @@ const QuestStatsPage = () => {
       setQuest(response.data);
     } catch (err) {
       console.log(err);
+    }
+  }
+  async function updateBounty() {
+    try {
+      const lamports = Number.parseFloat(newBounty) * LAMPORTS_PER_SOL;
+      const transaction = new Transaction().add(
+        SystemProgram.transfer({
+          fromPubkey: wallet.publicKey,
+          toPubkey: process.env.NEXT_PUBLIC_MASTER_WALLET,
+          lamports,
+        })
+      );
+
+      const signature = await wallet.sendTransaction(transaction, connection);
+      await connection.confirmTransaction(signature, "processed");
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/quest/addBounty/${questId}`,
+        { newBounty },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+      setIsModalOpen(false);
+      setNewBounty("");
+      toast.success("Bounty added successfully!");
+    } catch (err) {
+      console.log(err);
+      toast.error("Something went wrong");
     }
   }
 
@@ -111,7 +154,7 @@ const QuestStatsPage = () => {
     doc.text("Question Statistics", 14, doc.lastAutoTable.finalY + 10);
 
     stats.questionStats.forEach((question, index) => {
-      const questionText = quest.questions[index].text;
+      const questionText = quest.questions[index].questionText;
       doc.setFontSize(12);
       doc.text(
         `Q${index + 1}: ${questionText}`,
@@ -252,18 +295,48 @@ const QuestStatsPage = () => {
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow-lg transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Bounty</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{quest.bounty}</div>
-            <p className="text-xs text-muted-foreground">
-              Current bounty amount
-            </p>
-          </CardContent>
-        </Card>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">Bounty</CardTitle>
+              <Activity className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{quest?.bounty}</div>
+              <p className="text-xs text-muted-foreground">
+                Current bounty amount
+              </p>
+              <Button onClick={() => setIsModalOpen(true)} className="mt-2">
+                Update Bounty
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Bounty Modal */}
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Update Bounty</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <Label htmlFor="bounty">New Bounty Amount</Label>
+              <Input
+                id="bounty"
+                type="number"
+                value={newBounty}
+                onChange={(e) => setNewBounty(e.target.value)}
+                placeholder="Enter new bounty amount"
+              />
+            </div>
+            <DialogFooter>
+              <Button onClick={() => setIsModalOpen(false)} variant="outline">
+                Cancel
+              </Button>
+              <Button onClick={updateBounty}>Add Bounty</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Question Stats */}
@@ -297,7 +370,7 @@ const QuestStatsPage = () => {
             {filteredQuestions.map((question, index) => (
               <div key={index} className="border-t pt-4">
                 <h3 className="font-semibold mb-2">
-                  Question {index + 1}: {quest.questions[index].text}
+                  Question {index + 1}: {quest.questions[index].questionText}
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {question.optionStats.map((option, optionIndex) => {
