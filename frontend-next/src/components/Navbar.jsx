@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { FaMoon, FaSun } from "react-icons/fa";
+import { FaMoon, FaSun, FaBars, FaTimes } from "react-icons/fa";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -10,8 +10,8 @@ import { toast } from "sonner";
 const Navbar = () => {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [token, setToken] = useState(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
-  const [loading,setLoading]=useState(true);
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
@@ -38,13 +38,13 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 mt-5 rounded-lg px-4 py-2 flex  items-center justify-between w-full max-w-4xl mx-auto shadow-md transition-colors duration-300
+      className={`fixed top-0 left-0 right-0 z-50 mt-5 rounded-lg px-4 py-2 w-full max-w-6xl mx-auto shadow-md transition-colors duration-300
       ${isDarkMode ? "bg-gray-900 text-white" : "bg-white text-black"} border 
       ${isDarkMode ? "border-gray-700" : "border-gray-300"}`}
     >
-      {/* Navigation items container */}
-      <div className="flex items-center space-x-4 ml-auto flex-grow justify-between">
-        <Link href="/" className="flex items-center space-x-2 mr-4">
+      <div className="flex items-center justify-between">
+        {/* Logo Section */}
+        <Link href="/" className="flex items-center space-x-2">
           <img
             alt="Logo"
             className="rounded-full"
@@ -54,55 +54,110 @@ const Navbar = () => {
           />
           <span className="font-semibold text-xl">Bob</span>
         </Link>
-        <Button variant="ghost" asChild className="text-base font-medium">
-          <Link href="/quests">Quest</Link>
-        </Button>
-        <Button variant="ghost" asChild className="text-base font-medium">
-          <Link href="/create">Create</Link>
-        </Button>
-        <Button variant="ghost" asChild className="text-base font-medium">
-          <Link href="/profile">Dashboard</Link>
-        </Button>
-        <Button variant="ghost" asChild className="text-base font-medium">
-          <Link href="/leaderboard">Leaderboard</Link>
-        </Button>
 
-        {/* Theme toggle button */}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={toggleTheme}
-          className="w-10 h-10 p-0 flex items-center justify-center"
+        {/* Mobile Menu Button */}
+        <button
+          className="md:hidden"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
-          {isDarkMode ? (
-            <FaSun className="h-5 w-5" />
+          {isMenuOpen ? (
+            <FaTimes className="h-5 w-5" />
           ) : (
-            <FaMoon className="h-5 w-5" />
+            <FaBars className="h-5 w-5" />
           )}
-        </Button>
+        </button>
 
-        {/* Logout or Login Button */}
-        {token ? (
-          <Button
-            variant="destructive"
-            onClick={callLogout}
-            className="px-4 h-10 text-base font-medium"
-          >
-           Logout
-            
-          </Button>
-        ) : (
-          <Button
-            variant="secondary"
-            asChild
-            className="px-4 h-10 text-base font-medium"
-          >
-            <Link href="/login">Login/Signup</Link>
-          </Button>
-        )}
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center space-x-8">
+          <div className="flex items-center space-x-8">
+            <Link
+              href="/quests"
+              className="text-base font-medium hover:text-gray-300"
+            >
+              Quest
+            </Link>
+            <Link
+              href="/create"
+              className="text-base font-medium hover:text-gray-300"
+            >
+              Create
+            </Link>
+            <Link
+              href="/profile"
+              className="text-base font-medium hover:text-gray-300"
+            >
+              Dashboard
+            </Link>
+            <Link
+              href="/leaderboard"
+              className="text-base font-medium hover:text-gray-300"
+            >
+              Leaderboard
+            </Link>
+          </div>
+        </div>
 
-        {/* Wallet multi-button */}
-        <WalletMultiButton className="!bg-purple-500 hover:!bg-purple-600 rounded-md px-4 h-10 text-base font-medium" />
+        {/* Desktop Right Section */}
+        <div className="hidden md:flex items-center space-x-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleTheme}
+            className="w-10 h-10"
+          >
+            {isDarkMode ? (
+              <FaSun className="h-5 w-5" />
+            ) : (
+              <FaMoon className="h-5 w-5" />
+            )}
+          </Button>
+
+          {token ? (
+            <Button
+              variant="destructive"
+              onClick={callLogout}
+              className="px-4 h-10"
+            >
+              Logout
+            </Button>
+          ) : (
+            <Button variant="secondary" asChild className="px-4 h-10">
+              <Link href="/login">Login/Signup</Link>
+            </Button>
+          )}
+
+          <WalletMultiButton className="!bg-purple-500 hover:!bg-purple-600 rounded-md" />
+        </div>
+
+        {/* Mobile Menu */}
+        <div
+          className={`${
+            isMenuOpen ? "flex" : "hidden"
+          } md:hidden absolute top-full left-0 right-0 flex-col items-center space-y-4 py-4 bg-gray-900 border border-gray-700 mt-2 rounded-lg`}
+        >
+          <Link href="/quests" className="text-base font-medium">
+            Quest
+          </Link>
+          <Link href="/create" className="text-base font-medium">
+            Create
+          </Link>
+          <Link href="/profile" className="text-base font-medium">
+            Dashboard
+          </Link>
+          <Link href="/leaderboard" className="text-base font-medium">
+            Leaderboard
+          </Link>
+          {token ? (
+            <Button variant="destructive" onClick={callLogout}>
+              Logout
+            </Button>
+          ) : (
+            <Button variant="secondary" asChild>
+              <Link href="/login">Login/Signup</Link>
+            </Button>
+          )}
+          <WalletMultiButton className="!bg-purple-500 hover:!bg-purple-600 rounded-md" />
+        </div>
       </div>
     </nav>
   );

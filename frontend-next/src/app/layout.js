@@ -3,6 +3,7 @@ import AppWalletProvider from "@/components/AppWalletProvider";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { Toaster } from "sonner";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 export const metadata = {
   title: "Bob",
   description: "Decentralized data labelling platform",
@@ -16,7 +17,7 @@ export default function RootLayout({ children }) {
           <Toaster />
           <Navbar />
           <main className="flex-grow">{children}</main>
-        </AppWalletProvider>   
+        </AppWalletProvider>
       </body>
     </html>
   );

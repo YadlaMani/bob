@@ -13,6 +13,7 @@ import {
   IconSignature,
   IconTableColumn,
 } from "@tabler/icons-react";
+import Footer from "./Footer";
 
 const HomePage = () => {
   const toggleDarkMode = () => {
@@ -147,7 +148,7 @@ const HomePage = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
           >
-          <span className="dark:text-primary">Bob</span>-Decentralized
+            <span className="dark:text-primary">Bob</span>-Decentralized
           </motion.h1>
           <motion.p
             className="mt-4 text-3xl text-gray-600 dark:text-gray-400"
@@ -155,7 +156,7 @@ const HomePage = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 1 }}
           >
-           Crowdsourced Intelligence, Blockchain-Powered Rewards
+            Crowdsourced Intelligence, Blockchain-Powered Rewards
           </motion.p>
         </div>
       </div>
@@ -191,9 +192,9 @@ const HomePage = () => {
 
       <div className="flex items-start space-x-8 p-8">
         <div className="flex-1">
-        <h2 className="text-5xl font-extrabold text-black dark:text-white bg-clip-text">
-  Quest Creation Hub
-</h2>
+          <h2 className="text-5xl font-extrabold text-black dark:text-white bg-clip-text">
+            Quest Creation Hub
+          </h2>
 
           <p className="text-lg text-gray-600 mt-4">
             This section illustrates how the decentralized platform enables
@@ -235,46 +236,7 @@ const HomePage = () => {
           speed="slow"
         />
       </div>
-
-      <div className=" bg-gray-900 text-white">
-        <div className="container mx-auto px-4 flex items-center">
-          <div className="flex-1 flex justify-center">
-            <img
-              src="/footer.png"
-              alt="Footer Logo"
-              className="h-[24rem] w-auto object-cover"
-            />
-          </div>
-          <div className="flex-1 border-l h-full border-gray-600 flex pl-8">
-            <div className="space-y-4">
-              <a href="#about" className="hover:text-gray-400">
-                About{" "}
-              </a>
-              <a href="#services" className="hover:text-gray-400">
-                {" "}
-                Services{" "}
-              </a>
-              <a href="#contact" className="hover:text-gray-400">
-                {" "}
-                Contact{" "}
-              </a>
-            </div>
-            <div className="space-y-4 mt-8">
-              <a href="https://facebook.com" className="hover:text-gray-400">
-                Facebook{" "}
-              </a>
-              <a href="https://twitter.com" className="hover:text-gray-400">
-                {" "}
-                Twitter{" "}
-              </a>
-              <a href="https://linkedin.com" className="hover:text-gray-400">
-                {" "}
-                LinkedIn{" "}
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Footer />
     </div>
   );
 };
