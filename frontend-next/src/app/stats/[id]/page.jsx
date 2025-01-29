@@ -53,7 +53,7 @@ const QuestStatsPage = () => {
       );
       setStats(response.data);
     } catch (err) {
-      toast.error("Failed to load stats");
+      console.log(err);
     } finally {
       setIsLoading(false);
     }

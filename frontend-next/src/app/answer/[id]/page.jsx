@@ -165,7 +165,7 @@ function App() {
               </CardHeader>
               <CardContent>
                 <p className="text-4xl font-bold">
-                  {(quest.bounty * 0.95) / quest.attempts} USDC
+                  {(quest.bounty * 0.95) / quest.attempts} SOL
                 </p>
               </CardContent>
             </Card>
