@@ -66,7 +66,7 @@ const QuestStatsPage = () => {
       );
       setQuest(response.data);
     } catch (err) {
-      toast.error("Failed to load quest");
+      console.log(err);
     }
   }
 
