@@ -47,9 +47,9 @@ const Navbar = () => {
         />
         <span className="font-semibold text-xl">Bob</span>
       </Link>
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-4">
         <Button variant="ghost" asChild className="text-base font-medium">
-          <Link href="/quest">Quest</Link>
+          <Link href="/quests">Quests</Link>
         </Button>
         <Button variant="ghost" asChild className="text-base font-medium">
           <Link href="/create">Create</Link>
@@ -57,23 +57,27 @@ const Navbar = () => {
         <Button variant="ghost" asChild className="text-base font-medium">
           <Link href="/dashboard">Dashboard</Link>
         </Button>
+
+        {/* Theme toggle button */}
         <Button
           variant="ghost"
           size="icon"
           onClick={toggleTheme}
-          className="w-8 h-8 p-0"
+          className="w-10 h-10 p-0 flex items-center justify-center"
         >
           {isDarkMode ? (
-            <FaSun className="h-4 w-4" />
+            <FaSun className="h-5 w-5" />
           ) : (
-            <FaMoon className="h-4 w-4" />
+            <FaMoon className="h-5 w-5" />
           )}
         </Button>
+
+        {/* Logout or Login Button */}
         {token ? (
           <Button
             variant="destructive"
             onClick={callLogout}
-            className="px-3 h-8 text-base font-medium"
+            className="px-4 h-10 text-base font-medium"
           >
             Logout
           </Button>
@@ -81,12 +85,14 @@ const Navbar = () => {
           <Button
             variant="secondary"
             asChild
-            className="px-3 h-8 text-base font-medium"
+            className="px-4 h-10 text-base font-medium"
           >
             <Link href="/login">Login/Signup</Link>
           </Button>
         )}
-        <WalletMultiButton className="!bg-purple-500 hover:!bg-purple-600 rounded-md px-3 h-8 text-base font-medium" />
+
+        {/* Wallet multi-button */}
+        <WalletMultiButton className="!bg-purple-500 hover:!bg-purple-600 rounded-md px-4 h-10 text-base font-medium" />
       </div>
     </nav>
   );
