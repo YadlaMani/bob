@@ -13,6 +13,7 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { LAMPORTS_PER_SOL, SystemProgram, Transaction } from "@solana/web3.js";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge"; // Import Badge component
+import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "@/components/ui/dialog"; // Dialog for popover
 
 export default function ForumsPage() {
   const [user, setUser] = useState(null);
@@ -28,7 +29,6 @@ export default function ForumsPage() {
   const wallet = useWallet();
   const { connection } = useConnection();
 
-  // Redirect to login if no token is found
   useEffect(() => {
     if (!localStorage.getItem("token")) {
       toast.message("You need to login to use this feature");
@@ -36,7 +36,6 @@ export default function ForumsPage() {
     }
   }, [router]);
 
-  // Fetch forums from the backend
   async function fetchForums() {
     try {
       const response = await axios.get(
@@ -49,7 +48,6 @@ export default function ForumsPage() {
     }
   }
 
-  // Fetch user details
   async function fetchUser() {
     try {
       const response = await axios.get(
@@ -64,7 +62,6 @@ export default function ForumsPage() {
     }
   }
 
-  // Handle creating a new forum
   async function createForum() {
     try {
       await axios.post(
@@ -96,22 +93,27 @@ export default function ForumsPage() {
     }
   }
 
-  // Fetch data on component mount
   useEffect(() => {
     fetchUser();
     fetchForums();
   }, []);
 
-  // Filter forums based on search query
   const filteredForums = forums.filter((forum) =>
     forum.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Separate open and closed forums
   const openForums = filteredForums.filter((forum) => forum.status === "open");
   const closedForums = filteredForums.filter(
     (forum) => forum.status === "closed"
   );
+
+  // Function to truncate long descriptions
+  const truncateDescription = (description, maxLength = 100) => {
+    if (description.length > maxLength) {
+      return description.substring(0, maxLength) + "...";
+    }
+    return description;
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -122,7 +124,6 @@ export default function ForumsPage() {
         </Button>
       </div>
 
-      {/* Search Input */}
       <div className="mb-6">
         <Input
           type="text"
@@ -132,7 +133,6 @@ export default function ForumsPage() {
         />
       </div>
 
-      {/* Create New Forum Form */}
       {isCreateFormVisible && (
         <Card className="mb-6">
           <CardHeader>
@@ -189,71 +189,91 @@ export default function ForumsPage() {
       )}
 
       {/* Display Open Forums */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-8">
         {openForums.length > 0 ? (
           openForums.map((forum) => (
-            <Link href={`/forum/${forum._id}`} key={forum._id}>
-              <Card key={forum._id}>
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    {forum.title}
-                    <Badge
-                      variant="outline"
-                      className="bg-green-100 text-green-800"
-                    >
-                      Open
-                    </Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">{forum.description}</p>
-                  <div className="flex justify-between items-center text-sm text-gray-500">
-                    <span>Bounty: ${forum.bounty}</span>
-                    <span>Comments: {forum.comments?.length || 0}</span>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
+            <Dialog key={forum._id}>
+              <DialogTrigger>
+                <Card className="rounded-lg shadow-md h-64 flex flex-col justify-between p-4 transition-all hover:shadow-xl">
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      {forum.title}
+                      <Badge variant="outline" className="bg-green-100 text-green-800">
+                        Open
+                      </Badge>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex flex-col justify-between">
+                    <p className="text-gray-600 mb-12 flex-grow">
+                      {truncateDescription(forum.description)}
+                    </p>
+                    <div className="flex justify-between items-center text-sm text-gray-500">
+                      <span>Bounty: ${forum.bounty}</span>
+                      <span>Comments: {forum.comments?.length || 0}</span>
+                    </div>
+                    <Link href={`/forum/${forum._id}`}>
+                      <Button className="mt-2" size="sm">
+                        View Comments
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogTitle className="font-bold">{forum.title}</DialogTitle>
+                <p className="text-normal">{forum.description}</p>
+                <p className="text-gray-500">Bounty: ${forum.bounty}</p>
+                <p className="text-gray-500">Comments: {forum.comments?.length || 0}</p>
+              </DialogContent>
+            </Dialog>
           ))
         ) : (
-          <p className="text-gray-500 col-span-full text-center">
-            No open forums found.
-          </p>
+          <p className="text-gray-500 col-span-full text-center">No open forums found.</p>
         )}
       </div>
 
       {/* Display Closed Forums */}
       <h2 className="text-2xl font-bold mt-8 mb-4">Closed Forums</h2>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-8">
         {closedForums.length > 0 ? (
           closedForums.map((forum) => (
-            <Link href={`/forum/${forum._id}`} key={forum._id}>
-              <Card key={forum._id}>
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    {forum.title}
-                    <Badge
-                      variant="outline"
-                      className="bg-red-100 text-red-800"
-                    >
-                      Closed
-                    </Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">{forum.description}</p>
-                  <div className="flex justify-between items-center text-sm text-gray-500">
-                    <span>Bounty: ${forum.bounty}</span>
-                    <span>Comments: {forum.comments?.length || 0}</span>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
+            <Dialog key={forum._id}>
+              <DialogTrigger>
+                <Card className="rounded-lg shadow-md h-64 flex flex-col justify-between p-4 transition-all hover:shadow-xl">
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      {forum.title}
+                      <Badge variant="outline" className="bg-red-100 text-red-800">
+                        Closed
+                      </Badge>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex flex-col justify-between">
+                    <p className="text-gray-600 mb-4 flex-grow">
+                      {truncateDescription(forum.description)}
+                    </p>
+                    <div className="flex justify-between items-center text-sm text-gray-500">
+                      <span>Bounty: ${forum.bounty}</span>
+                      <span>Comments: {forum.comments?.length || 0}</span>
+                    </div>
+                    <Link href={`/forum/${forum._id}`}>
+                      <Button className="mt-2" size="sm">
+                        View Comments
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogTitle className="font-bold">{forum.title}</DialogTitle>
+                <p className="text-normal">{forum.description}</p>
+                <p className="text-gray-500">Bounty: ${forum.bounty}</p>
+                <p className="text-gray-500">Comments: {forum.comments?.length || 0}</p>
+              </DialogContent>
+            </Dialog>
           ))
         ) : (
-          <p className="text-gray-500 col-span-full text-center">
-            No closed forums found.
-          </p>
+          <p className="text-gray-500 col-span-full text-center">No closed forums found.</p>
         )}
       </div>
     </div>
