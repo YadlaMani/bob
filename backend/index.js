@@ -466,8 +466,12 @@ app.post(
 
       forum.bounty -= amount;
       comment.recievedBounty += amount;
+      if (forum.bounty === 0) {
+        forum.status = "closed";
+      }
 
       user.earnings += amount;
+      user.earningsHistory.push({ amount, time: new Date() });
 
       // Use a transaction to ensure atomicity
       const session = await mongoose.startSession();
