@@ -12,6 +12,8 @@ import { Label } from "@/components/ui/label";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { LAMPORTS_PER_SOL, SystemProgram, Transaction } from "@solana/web3.js";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge"; // Import Badge component
+
 export default function ForumsPage() {
   const [user, setUser] = useState(null);
   const [forums, setForums] = useState([]);
@@ -21,6 +23,7 @@ export default function ForumsPage() {
     description: "",
     bounty: 0,
   });
+  const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   const wallet = useWallet();
   const { connection } = useConnection();
@@ -97,7 +100,18 @@ export default function ForumsPage() {
   useEffect(() => {
     fetchUser();
     fetchForums();
-  }, []); //Fixed: Added dependency for fetchForums
+  }, []);
+
+  // Filter forums based on search query
+  const filteredForums = forums.filter((forum) =>
+    forum.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Separate open and closed forums
+  const openForums = filteredForums.filter((forum) => forum.status === "open");
+  const closedForums = filteredForums.filter(
+    (forum) => forum.status === "closed"
+  );
 
   return (
     <div className="container mx-auto p-4">
@@ -106,6 +120,16 @@ export default function ForumsPage() {
         <Button onClick={() => setIsCreateFormVisible(!isCreateFormVisible)}>
           {isCreateFormVisible ? "Cancel" : "Create New Forum"}
         </Button>
+      </div>
+
+      {/* Search Input */}
+      <div className="mb-6">
+        <Input
+          type="text"
+          placeholder="Search forums..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
       </div>
 
       {/* Create New Forum Form */}
@@ -164,14 +188,22 @@ export default function ForumsPage() {
         </Card>
       )}
 
-      {/* Display Forums */}
+      {/* Display Open Forums */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {forums.length > 0 ? (
-          forums.map((forum) => (
+        {openForums.length > 0 ? (
+          openForums.map((forum) => (
             <Link href={`/forum/${forum._id}`} key={forum._id}>
               <Card key={forum._id}>
                 <CardHeader>
-                  <CardTitle>{forum.title}</CardTitle>
+                  <CardTitle className="flex items-center justify-between">
+                    {forum.title}
+                    <Badge
+                      variant="outline"
+                      className="bg-green-100 text-green-800"
+                    >
+                      Open
+                    </Badge>
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600 mb-4">{forum.description}</p>
@@ -185,7 +217,42 @@ export default function ForumsPage() {
           ))
         ) : (
           <p className="text-gray-500 col-span-full text-center">
-            No forums yet. Create one!
+            No open forums found.
+          </p>
+        )}
+      </div>
+
+      {/* Display Closed Forums */}
+      <h2 className="text-2xl font-bold mt-8 mb-4">Closed Forums</h2>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {closedForums.length > 0 ? (
+          closedForums.map((forum) => (
+            <Link href={`/forum/${forum._id}`} key={forum._id}>
+              <Card key={forum._id}>
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    {forum.title}
+                    <Badge
+                      variant="outline"
+                      className="bg-red-100 text-red-800"
+                    >
+                      Closed
+                    </Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600 mb-4">{forum.description}</p>
+                  <div className="flex justify-between items-center text-sm text-gray-500">
+                    <span>Bounty: ${forum.bounty}</span>
+                    <span>Comments: {forum.comments?.length || 0}</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          ))
+        ) : (
+          <p className="text-gray-500 col-span-full text-center">
+            No closed forums found.
           </p>
         )}
       </div>

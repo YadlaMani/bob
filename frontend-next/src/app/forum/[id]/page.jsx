@@ -99,6 +99,16 @@ export default function ForumPage() {
       toast.error("Failed to gift SOL");
     }
   }
+  async function forumAction() {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/forums/${id}/action`
+      );
+      toast.success(response.data.message);
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   if (!forum) {
     return <div>Loading...</div>;
@@ -110,17 +120,31 @@ export default function ForumPage() {
         <CardHeader>
           <CardTitle>{forum.title}</CardTitle>
           <div className="text-sm text-gray-500">
-            Created by {forum.userId.name} on{" "}
-            {new Date(forum.createdAt).toLocaleDateString()}
+            created on {new Date(forum.createdAt).toLocaleDateString()}
           </div>
         </CardHeader>
         <CardContent>
           <p className="mb-4">{forum.description}</p>
           <div className="flex justify-between items-center">
             <span className="font-bold">Bounty: ${forum.bounty}</span>
-            <Button onClick={() => setIsCommentModalOpen(true)}>
-              Add Comment
+            <Button
+              className={
+                forum.status === "closed" ? "opacity-50 cursor-not-allowed" : ""
+              }
+              disabled={forum.status === "closed"}
+              onClick={() => {
+                if (forum.status === "open") {
+                  setIsCommentModalOpen(true);
+                }
+              }}
+            >
+              {forum.status === "open" ? "Add Comment" : "This forum is closed"}
             </Button>
+            {currUser && forum.userId === currUser._id && (
+              <Button onClick={forumAction}>
+                {forum.status == "open" ? "Close Forum" : "Open Forum"}
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>
