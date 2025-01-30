@@ -463,7 +463,8 @@ app.post(
       }
 
       forum.bounty -= amount;
-      comment.bounty += amount;
+      comment.recievedBounty += amount;
+
       user.earnings += amount;
 
       // Use a transaction to ensure atomicity
