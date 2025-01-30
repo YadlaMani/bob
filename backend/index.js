@@ -492,3 +492,17 @@ app.post(
     }
   }
 );
+app.post("/api/v1/forums/:id/action", async (req, res) => {
+  const forumId = req.params.id;
+  const forum = await forumModel.findById(forumId);
+  if (!forum) {
+    return res.status(404).json({ message: "Forum not found" });
+  }
+  if (forum.status === "closed") {
+    forum.status = "open";
+  } else {
+    forum.status = "closed";
+  }
+  await forum.save();
+  res.status(200).json({ message: "Forum status updated successfully" });
+});

@@ -17,6 +17,11 @@ const ForumSchema = new mongoose.Schema({
   bounty: { type: Number, default: 0 },
   comments: [CommentSchema],
   createdAt: { type: Date, default: Date.now },
+  status: {
+    type: String,
+    enum: ["open", "closed"],
+    default: "open",
+  },
 });
 
 // Create the models
