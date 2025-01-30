@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import axios from "axios";
 import { toast } from "sonner";
@@ -14,6 +14,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import Link from "next/link";
+import jsPDF from "jspdf"; // Import jsPDF
+import { saveAs } from "file-saver";
 
 export default function ForumPage() {
   const { id } = useParams();
@@ -23,7 +25,7 @@ export default function ForumPage() {
   const [isGiftModalOpen, setIsGiftModalOpen] = useState(false);
   const [selectedCommentId, setSelectedCommentId] = useState(null);
   const [currUser, setCurrUser] = useState(null);
-  const [giftAmount, setGiftAmount] = useState(0); // Store the gift amount
+  const [giftAmount, setGiftAmount] = useState(0);
 
   useEffect(() => {
     fetchForum();
@@ -99,6 +101,7 @@ export default function ForumPage() {
       toast.error("Failed to gift SOL");
     }
   }
+
   async function forumAction() {
     try {
       const response = await axios.post(
@@ -110,6 +113,89 @@ export default function ForumPage() {
     }
   }
 
+  const generateJSONReport = () => {
+    const jsonData = JSON.stringify(forum, null, 2);
+    const blob = new Blob([jsonData], { type: "application/json" });
+    saveAs(blob, `Forum_Report_${forum.title}.json`);
+  };
+
+  const generatePDFReport = () => {
+    const doc = new jsPDF();
+
+    // Set default font and size
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(12);
+
+    // Add title with styling
+    doc.setFontSize(24);
+    doc.setTextColor(33, 37, 41); // Dark gray color
+    doc.text(`Forum: ${forum.title}`, 14, 20);
+
+    // Add description with styling
+    doc.setFontSize(16);
+    doc.setTextColor(52, 58, 64); // Slightly lighter gray
+    doc.text("Description:", 14, 30);
+    doc.setFontSize(12);
+    doc.setTextColor(73, 80, 87); // Even lighter gray
+    const splitDescription = doc.splitTextToSize(forum.description, 180);
+    doc.text(splitDescription, 14, 40);
+
+    // Add a horizontal line separator
+    doc.setDrawColor(200, 200, 200); // Light gray color
+    doc.line(14, 50, 200, 50); // Draw a line from (x1, y1) to (x2, y2)
+
+    // Add comments section with styling
+    doc.setFontSize(18);
+    doc.setTextColor(33, 37, 41); // Dark gray color
+    doc.text("Comments", 14, 60);
+
+    let startY = 70; // Starting Y position for the first comment
+
+    // Loop through comments and add their content to the PDF
+    forum.comments.forEach((comment, index) => {
+      doc.setFontSize(14);
+      doc.setTextColor(52, 58, 64); // Slightly lighter gray
+      doc.text(`Comment ${index + 1}:`, 14, startY);
+
+      // Add comment content with a different color and indentation
+      doc.setFontSize(12);
+      doc.setTextColor(73, 80, 87); // Even lighter gray
+      const splitContent = doc.splitTextToSize(comment.content, 170);
+      doc.text(splitContent, 20, startY + 5);
+
+      // Add comment metadata
+      doc.setFontSize(10);
+      doc.setTextColor(108, 117, 125); // Light gray for metadata
+      doc.text(
+        `By: ${comment.username} | Date: ${new Date(
+          comment.createdAt
+        ).toLocaleString()}`,
+        20,
+        startY + 5 + splitContent.length * 5
+      );
+
+      // Add a small separator line between comments
+      doc.setDrawColor(200, 200, 200); // Light gray color
+      doc.line(
+        14,
+        startY + 15 + splitContent.length * 5,
+        200,
+        startY + 15 + splitContent.length * 5
+      );
+
+      startY += 20 + splitContent.length * 5; // Adjust spacing for the next comment
+
+      // Check if we need a new page
+      if (startY > 280) {
+        doc.addPage();
+        startY = 20;
+      }
+    });
+
+    // Save the PDF
+    doc.save(`Forum_Report_${forum.title}.pdf`);
+  };
+
   if (!forum) {
     return <div>Loading...</div>;
   }
@@ -120,7 +206,15 @@ export default function ForumPage() {
         <CardHeader>
           <CardTitle>{forum.title}</CardTitle>
           <div className="text-sm text-gray-500">
-            created on {new Date(forum.createdAt).toLocaleDateString()}
+            Created on {new Date(forum.createdAt).toLocaleDateString()}
+          </div>
+          <div className="flex space-x-2 mt-2">
+            <Button onClick={generatePDFReport} className="mt-2">
+              Download as PDF
+            </Button>
+            <Button onClick={generateJSONReport} className="mt-2">
+              Download as JSON
+            </Button>
           </div>
         </CardHeader>
         <CardContent>
@@ -164,7 +258,7 @@ export default function ForumPage() {
                 </div>
                 <p>{comment.content}</p>
                 <p>
-                  Bounty recieved:{Number(comment.recievedBounty.toFixed(2))}
+                  Bounty received: {Number(comment.recievedBounty.toFixed(2))}
                 </p>
 
                 <div className="flex items-center space-x-2 mt-2">
@@ -210,7 +304,6 @@ export default function ForumPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Gift Sol Modal */}
       <Dialog open={isGiftModalOpen} onOpenChange={setIsGiftModalOpen}>
         <DialogContent>
           <DialogHeader>
@@ -220,7 +313,7 @@ export default function ForumPage() {
           <input
             type="number"
             value={giftAmount}
-            onChange={(e) => setGiftAmount(parseFloat(e.target.value))}
+            onChange={(e) => setGiftAmount(Number.parseFloat(e.target.value))}
             min="0"
             max={forum.bounty}
             className="border p-2 rounded w-full mb-4 dark:text-black"
