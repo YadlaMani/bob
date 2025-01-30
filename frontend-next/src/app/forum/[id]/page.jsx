@@ -139,6 +139,10 @@ export default function ForumPage() {
                   </span>
                 </div>
                 <p>{comment.content}</p>
+                <p>
+                  Bounty recieved:{Number(comment.recievedBounty.toFixed(2))}
+                </p>
+
                 <div className="flex items-center space-x-2 mt-2">
                   <Button variant="outline" size="sm">
                     👍 {comment.upvotes}
