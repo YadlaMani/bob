@@ -12,8 +12,8 @@ import { Label } from "@/components/ui/label";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { LAMPORTS_PER_SOL, SystemProgram, Transaction } from "@solana/web3.js";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge"; // Import Badge component
-import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "@/components/ui/dialog"; // Dialog for popover
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 export default function ForumsPage() {
   const [user, setUser] = useState(null);
@@ -25,6 +25,7 @@ export default function ForumsPage() {
     bounty: 0,
   });
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedForum, setSelectedForum] = useState(null); // To hold the selected forum for the popover
   const router = useRouter();
   const wallet = useWallet();
   const { connection } = useConnection();
@@ -115,6 +116,11 @@ export default function ForumsPage() {
     return description;
   };
 
+  // Function to open forum details in the dialog
+  const openForumDetails = (forum) => {
+    setSelectedForum(forum);
+  };
+
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
@@ -193,7 +199,7 @@ export default function ForumsPage() {
         {openForums.length > 0 ? (
           openForums.map((forum) => (
             <Dialog key={forum._id}>
-              <DialogTrigger>
+              <DialogTrigger asChild>
                 <Card className="rounded-lg shadow-md h-64 flex flex-col justify-between p-4 transition-all hover:shadow-xl">
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between">
@@ -210,21 +216,15 @@ export default function ForumsPage() {
                     <div className="flex justify-between items-center text-sm text-gray-500">
                       <span>Bounty: ${forum.bounty}</span>
                       <span>Comments: {forum.comments?.length || 0}</span>
+                      <Link href={`/forum/${forum._id}`}>
+                        <Button className="ml-4" size="sm">
+                          View Comments
+                        </Button>
+                      </Link>
                     </div>
-                    <Link href={`/forum/${forum._id}`}>
-                      <Button className="mt-2" size="sm">
-                        View Comments
-                      </Button>
-                    </Link>
                   </CardContent>
                 </Card>
               </DialogTrigger>
-              <DialogContent>
-                <DialogTitle className="font-bold">{forum.title}</DialogTitle>
-                <p className="text-normal">{forum.description}</p>
-                <p className="text-gray-500">Bounty: ${forum.bounty}</p>
-                <p className="text-gray-500">Comments: {forum.comments?.length || 0}</p>
-              </DialogContent>
             </Dialog>
           ))
         ) : (
@@ -238,7 +238,7 @@ export default function ForumsPage() {
         {closedForums.length > 0 ? (
           closedForums.map((forum) => (
             <Dialog key={forum._id}>
-              <DialogTrigger>
+              <DialogTrigger asChild>
                 <Card className="rounded-lg shadow-md h-64 flex flex-col justify-between p-4 transition-all hover:shadow-xl">
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between">
@@ -255,27 +255,33 @@ export default function ForumsPage() {
                     <div className="flex justify-between items-center text-sm text-gray-500">
                       <span>Bounty: ${forum.bounty}</span>
                       <span>Comments: {forum.comments?.length || 0}</span>
+                      <Link href={`/forum/${forum._id}`}>
+                        <Button className="ml-4" size="sm">
+                          View Comments
+                        </Button>
+                      </Link>
                     </div>
-                    <Link href={`/forum/${forum._id}`}>
-                      <Button className="mt-2" size="sm">
-                        View Comments
-                      </Button>
-                    </Link>
                   </CardContent>
                 </Card>
               </DialogTrigger>
-              <DialogContent>
-                <DialogTitle className="font-bold">{forum.title}</DialogTitle>
-                <p className="text-normal">{forum.description}</p>
-                <p className="text-gray-500">Bounty: ${forum.bounty}</p>
-                <p className="text-gray-500">Comments: {forum.comments?.length || 0}</p>
-              </DialogContent>
             </Dialog>
           ))
         ) : (
           <p className="text-gray-500 col-span-full text-center">No closed forums found.</p>
         )}
       </div>
+
+      {/* Forum Detail Popover (Dialog) */}
+      {selectedForum && (
+        <Dialog open={!!selectedForum} onOpenChange={() => setSelectedForum(null)}>
+          <DialogContent>
+            <DialogTitle>{selectedForum.title}</DialogTitle>
+            <p>{selectedForum.description}</p>
+            <p className="text-gray-500">Bounty: ${selectedForum.bounty}</p>
+            <p className="text-gray-500">Comments: {selectedForum.comments?.length || 0}</p>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
