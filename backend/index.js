@@ -383,6 +383,8 @@ app.get("/api/v1/forums/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const forum = await forumModel.findById(id);
+
+    console.log(forum);
     if (forum) {
       res.status(200).json(forum);
     } else {
