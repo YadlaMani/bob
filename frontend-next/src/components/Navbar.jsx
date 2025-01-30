@@ -73,31 +73,31 @@ const Navbar = () => {
             <div className="flex items-center space-x-8">
               <Link
                 href="/quests"
-                className="text-base font-medium hover:text-gray-300"
+                className="text-base font-medium py-2 px-4 rounded-md transition-all duration-300 hover:!bg-purple-600 hover:text-white"
               >
                 Quest
               </Link>
               <Link
                 href="/create"
-                className="text-base font-medium hover:text-gray-300"
+                className="text-base font-medium py-2 px-4 rounded-md transition-all duration-300 hover:!bg-purple-600 hover:text-white"
               >
                 Create
               </Link>
               <Link
                 href="/profile"
-                className="text-base font-medium hover:text-gray-300"
+                className="text-base font-medium py-2 px-4 rounded-md transition-all duration-300 hover:!bg-purple-600 hover:text-white"
               >
                 Dashboard
               </Link>
               <Link
                 href="/leaderboard"
-                className="text-base font-medium hover:text-gray-300"
+                className="text-base font-medium py-2 px-4 rounded-md transition-all duration-300 hover:!bg-purple-600 hover:text-white"
               >
                 Leaderboard
               </Link>
               <Link
                 href="/forum"
-                className="text-base font-medium hover:text-gray-300"
+                className="text-base font-medium py-2 px-4 rounded-md transition-all duration-300 hover:!bg-purple-600 hover:text-white"
               >
                 Forum
               </Link>
@@ -144,19 +144,34 @@ const Navbar = () => {
           isMenuOpen ? "flex" : "hidden"
         } md:hidden fixed top-[calc(5rem+1px)] left-0 right-0 flex-col items-center space-y-4 py-4 bg-gray-900 border border-gray-700 rounded-lg z-40`}
       >
-        <Link href="/quests" className="text-base font-medium">
+        <Link
+          href="/quests"
+          className="text-base font-medium py-2 px-4 rounded-md transition-all duration-300 hover:!bg-purple-600 hover:text-white"
+        >
           Quest
         </Link>
-        <Link href="/create" className="text-base font-medium">
+        <Link
+          href="/create"
+          className="text-base font-medium py-2 px-4 rounded-md transition-all duration-300 hover:!bg-purple-600 hover:text-white"
+        >
           Create
         </Link>
-        <Link href="/profile" className="text-base font-medium">
+        <Link
+          href="/profile"
+          className="text-base font-medium py-2 px-4 rounded-md transition-all duration-300 hover:!bg-purple-600 hover:text-white"
+        >
           Dashboard
         </Link>
-        <Link href="/leaderboard" className="text-base font-medium">
+        <Link
+          href="/leaderboard"
+          className="text-base font-medium py-2 px-4 rounded-md transition-all duration-300 hover:!bg-purple-600 hover:text-white"
+        >
           Leaderboard
         </Link>
-        <Link href="/forum" className="text-base font-medium">
+        <Link
+          href="/forum"
+          className="text-base font-medium py-2 px-4 rounded-md transition-all duration-300 hover:!bg-purple-600 hover:text-white"
+        >
           Forum
         </Link>
         {token ? (
