@@ -13,7 +13,12 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { LAMPORTS_PER_SOL, SystemProgram, Transaction } from "@solana/web3.js";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function ForumsPage() {
   const [user, setUser] = useState(null);
@@ -95,6 +100,36 @@ export default function ForumsPage() {
   }
 
   useEffect(() => {
+    if (typeof window !== "undefined" && !localStorage.getItem("token")) {
+      toast.message("You need to login to use this feature");
+      router.push("/login");
+    }
+  }, [router]);
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const token =
+          typeof window !== "undefined" ? localStorage.getItem("token") : null;
+        if (!token) {
+          toast.error("You must login first");
+          return;
+        }
+
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/user`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setUser(response.data[0]);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
     fetchUser();
     fetchForums();
   }, []);
@@ -204,7 +239,10 @@ export default function ForumsPage() {
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between">
                       {forum.title}
-                      <Badge variant="outline" className="bg-green-100 text-green-800">
+                      <Badge
+                        variant="outline"
+                        className="bg-green-100 text-green-800"
+                      >
                         Open
                       </Badge>
                     </CardTitle>
@@ -228,7 +266,9 @@ export default function ForumsPage() {
             </Dialog>
           ))
         ) : (
-          <p className="text-gray-500 col-span-full text-center">No open forums found.</p>
+          <p className="text-gray-500 col-span-full text-center">
+            No open forums found.
+          </p>
         )}
       </div>
 
@@ -243,7 +283,10 @@ export default function ForumsPage() {
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between">
                       {forum.title}
-                      <Badge variant="outline" className="bg-red-100 text-red-800">
+                      <Badge
+                        variant="outline"
+                        className="bg-red-100 text-red-800"
+                      >
                         Closed
                       </Badge>
                     </CardTitle>
@@ -267,18 +310,25 @@ export default function ForumsPage() {
             </Dialog>
           ))
         ) : (
-          <p className="text-gray-500 col-span-full text-center">No closed forums found.</p>
+          <p className="text-gray-500 col-span-full text-center">
+            No closed forums found.
+          </p>
         )}
       </div>
 
       {/* Forum Detail Popover (Dialog) */}
       {selectedForum && (
-        <Dialog open={!!selectedForum} onOpenChange={() => setSelectedForum(null)}>
+        <Dialog
+          open={!!selectedForum}
+          onOpenChange={() => setSelectedForum(null)}
+        >
           <DialogContent>
             <DialogTitle>{selectedForum.title}</DialogTitle>
             <p>{selectedForum.description}</p>
             <p className="text-gray-500">Bounty: ${selectedForum.bounty}</p>
-            <p className="text-gray-500">Comments: {selectedForum.comments?.length || 0}</p>
+            <p className="text-gray-500">
+              Comments: {selectedForum.comments?.length || 0}
+            </p>
           </DialogContent>
         </Dialog>
       )}

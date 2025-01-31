@@ -46,11 +46,18 @@ export default function ForumPage() {
 
   async function fetchUser() {
     try {
+      const token =
+        typeof window !== "undefined" ? localStorage.getItem("token") : null;
+      if (!token) {
+        toast.error("You must login first");
+        return;
+      }
+
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/user`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -62,11 +69,18 @@ export default function ForumPage() {
 
   async function addComment() {
     try {
+      const token =
+        typeof window !== "undefined" ? localStorage.getItem("token") : null;
+      if (!token) {
+        toast.error("You must login first");
+        return;
+      }
+
       await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/forums/${id}/comments`,
         { content: newComment },
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       toast.success("Comment added successfully!");
