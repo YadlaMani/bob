@@ -47,17 +47,12 @@ export default function CreateQuestion() {
   const [editingIndex, setEditingIndex] = useState(null);
   const [selectedTags, setSelectedTags] = useState([]);
 
-  if(!localStorage.getItem("token")){
-    toast.error("You must login first");
-    router.push("/login");
-    return null;
-  }
-
   useEffect(() => {
-    if (!wallet.publicKey) {
-      toast.error("Connect wallet to create a quest");
+    if (typeof window !== "undefined" && !localStorage.getItem("token")) {
+      toast.error("You must login first");
+      router.push("/login");
     }
-  }, [wallet.publicKey]);
+  }, []);
 
   const handleAddOption = () => setOptions((prev) => [...prev, ""]);
 
@@ -99,12 +94,10 @@ export default function CreateQuestion() {
     }
   };
 
-  
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(false);
-    if(!thumbnail){
+    if (!thumbnail) {
       setError("Thumbnail is required");
       return;
     }
@@ -134,7 +127,7 @@ export default function CreateQuestion() {
       status,
       questions,
       attempts,
-      selectedTags
+      selectedTags,
     };
 
     try {
@@ -168,10 +161,10 @@ export default function CreateQuestion() {
       setLoading(true);
     }
   };
-  const handleRemoveQuestion=(index)=>{
-    setQuestions(questions.filter((_, i) => i!== index));
+  const handleRemoveQuestion = (index) => {
+    setQuestions(questions.filter((_, i) => i !== index));
     toast.success("Question removed successfully!");
-  }
+  };
   const handleEditQuestion = (index) => {
     setEditingIndex(index);
     setQuestionText(questions[index].questionText);
@@ -179,17 +172,17 @@ export default function CreateQuestion() {
     setType(questions[index].type);
     openModal();
   };
-  
+
   const handleAddOrUpdateQuestion = (e) => {
     e.preventDefault();
-    
+
     if (options.length === 0) {
       setError("Question must have at least one option");
       return;
     }
-  
+
     const updatedQuestion = { questionText, type, options: [...options] };
-  
+
     if (editingIndex !== null) {
       // Update existing question
       setQuestions((prev) =>
@@ -200,7 +193,7 @@ export default function CreateQuestion() {
       // Add new question
       setQuestions((prev) => [...prev, updatedQuestion]);
     }
-  
+
     // Reset fields
     setQuestionText("");
     setOptions([]);
@@ -289,12 +282,50 @@ export default function CreateQuestion() {
                     ))}
                   </ul>
                   <div className="flex justify-end space-x-2">
-                  <Button type="button" className="bg-green-700 hover:bg-green-400" onClick={() => handleEditQuestion(index)}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pen"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg>
+                    <Button
+                      type="button"
+                      className="bg-green-700 hover:bg-green-400"
+                      onClick={() => handleEditQuestion(index)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-pen"
+                      >
+                        <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
+                      </svg>
                     </Button>
-                  
-                    <Button type="button" className="bg-red-700 hover:bg-red-400" onClick={() => handleRemoveQuestion(index)}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+
+                    <Button
+                      type="button"
+                      className="bg-red-700 hover:bg-red-400"
+                      onClick={() => handleRemoveQuestion(index)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-trash-2"
+                      >
+                        <path d="M3 6h18" />
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                        <line x1="10" x2="10" y1="11" y2="17" />
+                        <line x1="14" x2="14" y1="11" y2="17" />
+                      </svg>
                     </Button>
                   </div>
                 </AccordionContent>
@@ -326,39 +357,45 @@ export default function CreateQuestion() {
           <div>
             {/* Interest Selection */}
             <div className="space-y-2">
-                <label htmlFor="areas">Select Domains (Max 6)</label>
-                <Select onValueChange={handleAddTag}>
-                  <SelectTrigger id="areas">
-                    <SelectValue placeholder="Choose an interest" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {areas.map((area) => (
-                      <SelectItem key={area} value={area}>
-                        {area}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <div className="space-x-2">
-                {selectedTags.map((tag) => (
-                    <span key={tag} variant="secondary" className="text-sm py-1 px-2 w-[fit-content] bg-gray-700 rounded-lg ">
-                      {tag}
-                      <button type="button" onClick={() => handleRemoveTag(tag)} className="ml-1 text-gray-500 hover:text-gray-700">
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
+              <label htmlFor="areas">Select Domains (Max 6)</label>
+              <Select onValueChange={handleAddTag}>
+                <SelectTrigger id="areas">
+                  <SelectValue placeholder="Choose an interest" />
+                </SelectTrigger>
+                <SelectContent>
+                  {areas.map((area) => (
+                    <SelectItem key={area} value={area}>
+                      {area}
+                    </SelectItem>
                   ))}
-                </div>
-
-                
+                </SelectContent>
+              </Select>
+              <div className="space-x-2">
+                {selectedTags.map((tag) => (
+                  <span
+                    key={tag}
+                    variant="secondary"
+                    className="text-sm py-1 px-2 w-[fit-content] bg-gray-700 rounded-lg "
+                  >
+                    {tag}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveTag(tag)}
+                      className="ml-1 text-gray-500 hover:text-gray-700"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                ))}
               </div>
-
+            </div>
           </div>
 
           <Select
             value={status}
             onValueChange={(newValue) => setStatus(newValue)}
-            className="w-full mt-4">
+            className="w-full mt-4"
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
@@ -401,7 +438,8 @@ export default function CreateQuestion() {
               <Select
                 value={type}
                 onValueChange={(newType) => setType(newType)}
-                className="mt-2">
+                className="mt-2"
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select option type" />
                 </SelectTrigger>
@@ -450,7 +488,7 @@ export default function CreateQuestion() {
                   Close
                 </Button>
                 <Button type="button" onClick={handleAddOrUpdateQuestion}>
-                {editingIndex !== null ? "Update Question" : "Add Question"}
+                  {editingIndex !== null ? "Update Question" : "Add Question"}
                 </Button>
               </div>
             </div>
