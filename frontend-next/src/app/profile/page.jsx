@@ -33,18 +33,20 @@ const Profile = () => {
   const [user, setUser] = useState(null);
   const [quests, setQuests] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isDarkMode, setIsDarkMode] = useState(
-    document.documentElement.classList.contains("dark")
-  );
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
+    // Check for dark mode on the client side
+    setIsDarkMode(document.documentElement.classList.contains("dark"));
     fetchUserDetails();
     fetchUserQuests();
   }, []);
 
   const toggleDarkMode = () => {
-    document.documentElement.classList.toggle("dark");
-    setIsDarkMode(!isDarkMode);
+    if (typeof window !== "undefined") {
+      document.documentElement.classList.toggle("dark");
+      setIsDarkMode(!isDarkMode);
+    }
   };
 
   // Fetch user details
