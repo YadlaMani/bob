@@ -114,6 +114,10 @@ const QuestStatsPage = () => {
   }
 
   useEffect(() => {
+    if (typeof window !== "undefined" && !localStorage.getItem("token")) {
+      toast.error("You must login first");
+      router.push("/login");
+    }
     if (questId) {
       getStats();
       getQuest();
