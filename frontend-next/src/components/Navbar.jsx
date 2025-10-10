@@ -53,7 +53,7 @@ const Navbar = () => {
               src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.ULC-eiskdEGCiSg4KQab9gHaFj%26pid%3DApi&f=1&ipt=2836803f2e42526fcdccac3a26d8c7c43bfa8d038d9e6e67ea1f68b247e5030a&ipo=images"
               width="32"
             />
-            <span className="font-semibold text-xl">Bob</span>
+            <span className="font-semibold text-xl">DataQuest</span>
           </Link>
 
           {/* Mobile Menu Button */}

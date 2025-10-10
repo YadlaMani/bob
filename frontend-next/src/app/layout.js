@@ -5,7 +5,7 @@ import { Toaster } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 export const metadata = {
-  title: "Bob",
+  title: "DataQuest",
   description: "Decentralized data labelling platform",
 };
 
