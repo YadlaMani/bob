@@ -119,7 +119,7 @@ const HomePage = () => {
   return (
     <div className="relative min-h-screen ">
       <Head>
-        <title>BOB - Decentralized Data Ecosystem</title>
+        <title>DataQuest - Decentralized Data Ecosystem</title>
         <meta
           name="description"
           content="Link businesses, researchers, and creators with global contributors for quality data labels and crypto rewards."
@@ -135,7 +135,7 @@ const HomePage = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
           >
-            <span className="dark:text-primary">Bob</span>-Decentralized
+            <span className="dark:text-primary">DataQuest</span>-Decentralized
           </motion.h1>
           <motion.p
             className="mt-4 text-3xl text-gray-600 dark:text-gray-400"
@@ -203,7 +203,7 @@ const HomePage = () => {
 
       <div className="py-16">
         <h2 className="text-5xl font-extrabold text-center text-black dark:text-white mb-8">
-          Why<span className="dark:text-primary"> Bob</span>
+          Why<span className="dark:text-primary"> DataQuest</span>
         </h2>
         <BentoGrid className="max-w-4xl mx-auto md:auto-rows-[20rem]">
           {bentoItems.map((item, i) => (
